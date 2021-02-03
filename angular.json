@@ -38,6 +38,8 @@
               "firebase",
               "firebase/app",
               "@firebase/firestore",
+              "@firebase/database",
+              "@firebase/auth",
               "@firebase/app"
             ]
           },

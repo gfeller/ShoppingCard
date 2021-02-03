@@ -6,7 +6,7 @@ import {Item} from '../model/item';
 import * as moment from 'moment';
 import {BaseService} from './base.service';
 import {of} from 'rxjs';
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
 import {AngularFirestore, DocumentChangeAction} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {CoreState} from '../../core/state/core/reducer';

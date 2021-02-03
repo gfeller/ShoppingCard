@@ -6,7 +6,7 @@ import {List} from '../../model/list';
 import {Item} from '../../model/item';
 import {getSelectedItems} from '../../state/items';
 import {getSelectedList} from '../../state/lists';
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
 import {NotificationData} from '../../../core/state/core/actions';
 import {StoreDto} from '../../../core/model/dto';
 import {ListState} from '../../state/lists/reducer';

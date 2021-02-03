@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {DebugElement, Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import {List} from '../model/list';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import {BaseService} from './base.service';
 import {defer} from 'rxjs';
 import {map} from 'rxjs/operators';

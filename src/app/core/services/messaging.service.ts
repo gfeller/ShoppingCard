@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
-import {messaging} from 'firebase/app';
-
-import {AngularFireMessaging} from '@angular/fire/messaging';
-
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 
 import {AngularFireAuth} from '@angular/fire/auth';
 
@@ -19,13 +17,14 @@ import * as CoreActions from '../state/core/actions';
   providedIn: 'root'
 })
 export class MessagingService {
-  private messaging: firebase.messaging.Messaging;
+  private readonly messaging: firebase.messaging.Messaging;
 
 
-  constructor(private afMessaging: AngularFireMessaging, private db: AngularFirestore, private afAuth: AngularFireAuth, private store: Store<CoreState>) {
-
-    if (messaging.isSupported()) {
-      this.messaging = messaging();
+  constructor(private db: AngularFirestore, private afAuth: AngularFireAuth, private store: Store<CoreState>) {
+    console.log(firebase.messaging)
+    if (firebase.messaging && firebase.messaging.isSupported()) {
+      debugger;
+      this.messaging = firebase.messaging();
     }
   }
 

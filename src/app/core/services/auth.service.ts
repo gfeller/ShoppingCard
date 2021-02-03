@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 
 import {Store} from '@ngrx/store';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {User as fireBaseUser} from 'firebase';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 
 import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../state/core/model';
 import {defer, from, Observable} from 'rxjs';
@@ -16,7 +15,7 @@ import {CoreActions} from '../state';
 })
 export class AuthService {
   constructor(public afAuth: AngularFireAuth, private  state: Store<CoreState>) {
-    afAuth.onAuthStateChanged((user?: fireBaseUser) => {
+    afAuth.onAuthStateChanged((user? : firebase.User) => {
       if (user === null) {
         afAuth.signInAnonymously();
       } else {
