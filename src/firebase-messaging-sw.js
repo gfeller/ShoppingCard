@@ -12,7 +12,6 @@ firebase.initializeApp({
   appId: "1:477279744354:web:2fff0adf68cbc535bdbc3b"
 });
 
-console.log(firebase.messaging.isSupported());
 if (firebase.messaging.isSupported()) {
   const messaging = firebase.messaging();
 }

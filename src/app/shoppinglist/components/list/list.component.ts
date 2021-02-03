@@ -76,8 +76,7 @@ export class ListComponent {
 
   public checkItem(item: Item) {
     if (item.boughtAt == null) {
-      item.boughtAt = firebase.firestore.Timestamp.now();
-      this.store.dispatch(ItemsActions.update({item}));
+      this.store.dispatch(ItemsActions.update({item: {...item, boughtAt: firebase.firestore.Timestamp.now()}}));
     } else {
       this.addItem({description: item.description, listId: item.listId});
     }

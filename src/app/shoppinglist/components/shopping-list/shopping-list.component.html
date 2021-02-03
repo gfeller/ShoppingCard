@@ -19,5 +19,6 @@
   </a>
 </nav>
 
-<router-outlet></router-outlet>
+<router-outlet #myOutlet="outlet"></router-outlet>
+<div [hidden]="myOutlet.isActivated" style="padding-top: min(50%, 160px); text-align: center">Keine Liste ausgewählt. Erstellen Sie doch eine neue!</div>
 

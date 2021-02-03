@@ -56,7 +56,7 @@ export class UserComponent implements OnInit {
   }
 
   onReset(email: string) {
-    this.store.dispatch(CoreActions.authResetPwd({email: this._user.email}));
+    this.store.dispatch(CoreActions.authResetPwd({email: this.pwdResetData.value.email}));
     this.ngOnInit();
   }
 

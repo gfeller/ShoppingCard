@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {Store} from '@ngrx/store';
-import {getLists} from '../../state/lists';
+import {getLists, getSelectedList} from '../../state/lists';
 import {List} from '../../model/list';
 import {Observable} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';

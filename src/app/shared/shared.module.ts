@@ -17,9 +17,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {MomentModule} from 'ngx-moment';
 import {SafePipe} from './util/safe.pipe';
+import {OnlyAnonymousDirective, OnlyUserDirective} from './security/security.guard';
 
 const MATERIAL = [MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
   MatButtonModule, MatCheckboxModule, MatToolbarModule, MatIconModule, MatTabsModule, MatListModule, MatSnackBarModule];
+
+const DIRECTIVES = [OnlyAnonymousDirective, OnlyUserDirective]
 
 @NgModule({
   imports: [
@@ -37,9 +40,10 @@ const MATERIAL = [MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardMod
     ReactiveFormsModule,
     MomentModule,
     SafePipe,
-    ...MATERIAL
+    ...MATERIAL,
+    ...DIRECTIVES
   ],
-  declarations: [SafePipe]
+  declarations: [SafePipe, ...DIRECTIVES]
 })
 export class SharedModule {
 }

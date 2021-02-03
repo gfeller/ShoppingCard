@@ -14,7 +14,7 @@ export const getLists = createSelector(
 export const getSelectedListId = createSelector(
   getListState,
   (state: ListState) => {
-    return state.selectedListId || Object.values(state.entities)[0].id;
+    return state.selectedListId; //|| Object.values(state.entities)[0].id;
   }
 );
 

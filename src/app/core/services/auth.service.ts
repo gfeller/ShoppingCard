@@ -15,7 +15,7 @@ import {CoreActions} from '../state';
 })
 export class AuthService {
   constructor(public afAuth: AngularFireAuth, private  state: Store<CoreState>) {
-    afAuth.onAuthStateChanged((user? : firebase.User) => {
+    afAuth.onAuthStateChanged((user?: firebase.User) => {
       if (user === null) {
         afAuth.signInAnonymously();
       } else {

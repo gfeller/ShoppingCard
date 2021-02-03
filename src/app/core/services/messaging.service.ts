@@ -21,9 +21,7 @@ export class MessagingService {
 
 
   constructor(private db: AngularFirestore, private afAuth: AngularFireAuth, private store: Store<CoreState>) {
-    console.log(firebase.messaging)
     if (firebase.messaging && firebase.messaging.isSupported()) {
-      debugger;
       this.messaging = firebase.messaging();
     }
   }
