@@ -37,7 +37,4 @@ import {uiInformationChanged} from './core/state/core/actions';
 })
 export class AppModule {
 
-  constructor(private coreStore: Store<State>, private deviceService: DeviceDetectorService) {
-    coreStore.dispatch(uiInformationChanged({info: {isMobile: deviceService.isMobile()}}));
-  }
 }

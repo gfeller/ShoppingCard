@@ -19,6 +19,7 @@ export const metaReducers: MetaReducer<State>[] = !environment.production ? [] :
 
 export const selectCore = (state: State) => state.core;
 export const selectIsOnline = createSelector(selectCore, x => x.online);
+export const selectIsMobile = createSelector(selectCore, x => x.isMobile);
 export const selectNotificationToken = createSelector(selectCore, x => x.notificationToken);
 export const selectUser = createSelector(selectCore, x => x.user);
 export const selectMessages = createSelector(selectCore, x => x.messages);

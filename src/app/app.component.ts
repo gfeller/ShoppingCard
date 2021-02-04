@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthUser} from './core/state/core/model';
 import {Store} from '@ngrx/store';
-import {selectIsOnline, selectMessages, selectUser, State} from './core/state';
+import {selectIsMobile, selectIsOnline, selectMessages, selectUser, State} from './core/state';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import * as CoreActions from './core/state/core/actions';
 
@@ -16,11 +16,13 @@ export class AppComponent {
   private openSnackbar = false;
 
   isOnline$: Observable<boolean>;
+  isMobile$: Observable<boolean>;
   user$: Observable<AuthUser>;
 
 
   constructor(private store: Store<State>, public snackBar: MatSnackBar) {
     this.isOnline$ = store.select(selectIsOnline);
+    this.isMobile$ = store.select(selectIsMobile)
     this.user$ = store.select(selectUser);
 
 

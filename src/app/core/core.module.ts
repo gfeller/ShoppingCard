@@ -11,6 +11,7 @@ import {environment} from '../../environments/environment';
 import {GlobalErrorHandler} from './services/global-error.handler';
 import {StoreModule} from '@ngrx/store';
 import {metaReducers, reducers} from './state';
+import {UiService} from './services/ui.service';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import {metaReducers, reducers} from './state';
   ]
 })
 export class CoreModule {
-  constructor(onlineService: OnlineService, authService: AuthService, msgService: MessagingService) /*Eager*/ {
+  constructor(uiService: UiService, onlineService: OnlineService, authService: AuthService, msgService: MessagingService) /*Eager*/ {
     msgService.getPermission();
     msgService.receiveMessage();
   }

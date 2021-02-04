@@ -2,9 +2,10 @@
   display: grid;
   grid-template-areas:
     "toolbar"
-    "content";
+    "content"
+    "subMenu";
 
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
   max-height: 100vh;
 }
@@ -16,6 +17,13 @@
 .content{
   grid-area: content;
 }
+
+.subMenu{
+  grid-area: subMenu;
+  background: red;
+}
+
+
 
 
 .layout{

@@ -1,10 +1,10 @@
-<div class="layout">
+<div class="layout" [class.mobile]="isMobile$ | async">
   <mat-toolbar class="toolbar">
-  <span>
-    <button mat-icon-button [routerLink]="['/']" style="position: relative;display: flex;align-items: center;">
-      <mat-icon>home</mat-icon>
-    </button>
-  </span>
+    <span>
+      <button mat-icon-button [routerLink]="['/']" style="position: relative;display: flex;align-items: center;">
+        <mat-icon>home</mat-icon>
+      </button>
+    </span>
     <span class="fill-remaining-space"></span>
     <div *ngIf="user$ | async as user" style="display: flex; align-items: center">
       <button class="test-user-settings" mat-button [routerLink]="['/user']">
@@ -23,6 +23,7 @@
     <mat-icon>{{(isOnline$ | async) ? 'cloud_queue' : 'cloud_off'}}</mat-icon>
   </mat-toolbar>
   <div class="content">
-    <router-outlet ></router-outlet>
+    <router-outlet></router-outlet>
   </div>
+  <ng-container [cdkPortalOutlet]="selectedPortal"></ng-container>
 </div>
