@@ -5,12 +5,13 @@ import {Store} from '@ngrx/store';
 import {selectIsMobile, selectIsOnline, selectMessages, selectUser, State} from './core/state';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import * as CoreActions from './core/state/core/actions';
+import {UiService} from './core/services/ui.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   private openSnackbar = false;
@@ -20,7 +21,7 @@ export class AppComponent {
   user$: Observable<AuthUser>;
 
 
-  constructor(private store: Store<State>, public snackBar: MatSnackBar) {
+  constructor(private store: Store<State>, public snackBar: MatSnackBar, public uiService : UiService) {
     this.isOnline$ = store.select(selectIsOnline);
     this.isMobile$ = store.select(selectIsMobile)
     this.user$ = store.select(selectUser);

@@ -3,7 +3,7 @@ import {ShoppingListComponent, ShoppingListPageComponent} from './components/sho
 import {ListService} from './services/list.service';
 import {StoreModule} from '@ngrx/store';
 import {SharedModule} from '../shared/shared.module';
-import {AddItemDialogComponent} from './components/shopping-list/add-item-dialog/add-item-dialog.component';
+import {AddItemDialogComponent} from './components/add-item-dialog/add-item-dialog.component';
 import {EffectsModule} from '@ngrx/effects';
 import {ShoppingListEffects} from './state/lists/effects';
 import {ListComponent, ListPageComponent} from './components/list/list.component';

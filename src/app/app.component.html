@@ -6,6 +6,8 @@
       </button>
     </span>
     <span class="fill-remaining-space"></span>
+    <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
+    <span class="fill-remaining-space"></span>
     <div *ngIf="user$ | async as user" style="display: flex; align-items: center">
       <button class="test-user-settings" mat-button [routerLink]="['/user']">
         <ng-template [ngIf]="user.isAnonymous">
@@ -25,5 +27,5 @@
   <div class="content">
     <router-outlet></router-outlet>
   </div>
-  <ng-container [cdkPortalOutlet]="selectedPortal"></ng-container>
+  <ng-container [cdkPortalOutlet]="uiService.subMenu | async"></ng-container>
 </div>

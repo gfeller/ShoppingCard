@@ -1,4 +1,4 @@
-.layout{
+.layout {
   display: grid;
   grid-template-areas:
     "toolbar"
@@ -10,22 +10,21 @@
   max-height: 100vh;
 }
 
-.toolbar{
+.toolbar {
   grid-area: toolbar;
 }
 
-.content{
+.content {
+  overflow: auto;
   grid-area: content;
 }
 
-.subMenu{
+.subMenu {
   grid-area: subMenu;
   background: red;
 }
 
 
-
-
-.layout{
+.layout {
 
 }

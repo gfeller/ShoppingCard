@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
@@ -13,6 +13,10 @@ import {ListState} from '../../state/lists/reducer';
 import {selectNotificationForList, State} from '../../../core/state';
 import {ItemsActions, ListActions} from '../../state';
 import {ShareService} from '../../../core/services/share.service';
+import {MatDialog} from '@angular/material/dialog';
+import {UiService} from '../../../core/services/ui.service';
+import {TemplatePortal} from '@angular/cdk/portal';
+import {AddItemDialogComponent} from '../add-item-dialog/add-item-dialog.component';
 
 
 @Component({
@@ -20,7 +24,7 @@ import {ShareService} from '../../../core/services/share.service';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent {
+export class ListComponent implements AfterViewInit, OnDestroy {
   private _items: Item[];
 
   public addNewItemText: string;
@@ -56,8 +60,21 @@ export class ListComponent {
     });
   }
 
+  @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
 
-  constructor(private store: Store<ListState>, private shareService: ShareService) {
+  constructor(private store: Store<ListState>, private shareService: ShareService, private viewContainerRef: ViewContainerRef, private uiService: UiService, public dialog: MatDialog,) {
+  }
+
+  ngAfterViewInit(): void {
+    const templatePortal = new TemplatePortal(this.templateForParent, this.viewContainerRef);
+    setTimeout(() => {
+      this.uiService.setHeaderMenu(templatePortal);
+    });
+  }
+
+
+  ngOnDestroy(): void {
+    this.uiService.setHeaderMenu(null);
   }
 
   public shareList() {
@@ -82,6 +99,26 @@ export class ListComponent {
 
   public removeItem(event: Event, item: Item) {
     this.store.dispatch(ItemsActions.remove({id: item.id}));
+    event.stopPropagation();
+  }
+
+
+  showDialog(event, list: List) {
+
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      data: {description: list.description, isNew: false},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (result.delete) {
+          this.store.dispatch(ListActions.removeShareList({id: list.id}));
+        } else if (result.data) {
+          this.store.dispatch(ListActions.update({item: {...list, description: result.data.description}}));
+        }
+      }
+    });
+    event.preventDefault();
     event.stopPropagation();
   }
 }

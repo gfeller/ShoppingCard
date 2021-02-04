@@ -19,6 +19,7 @@ import {MomentModule} from 'ngx-moment';
 import {SafePipe} from './util/safe.pipe';
 import {OnlyAnonymousDirective, OnlyUserDirective} from './security/security.guard';
 import {ConfirmButtonComponent} from './components/confirm-button/confirm-button.component';
+import {PortalModule} from '@angular/cdk/portal';
 
 const MATERIAL = [MatButtonModule, MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
   MatButtonModule, MatCheckboxModule, MatToolbarModule, MatIconModule, MatTabsModule, MatListModule, MatSnackBarModule];
@@ -29,12 +30,12 @@ const COMPONENTS = [ConfirmButtonComponent];
 
 @NgModule({
   imports: [
-
     CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     MomentModule,
+    PortalModule,
     ...MATERIAL
   ],
   exports: [
@@ -44,6 +45,7 @@ const COMPONENTS = [ConfirmButtonComponent];
     FormsModule,
     ReactiveFormsModule,
     MomentModule,
+    PortalModule,
     SafePipe,
     ...MATERIAL,
     ...DIRECTIVES,

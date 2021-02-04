@@ -48,4 +48,11 @@ body{
     width: 30px;
     max-width: 30px;
   }
+
+  .mat-dialog-actions > *, .mat-dialog-actions button{
+    width: 100%;
+    margin: 0 !important;
+  }
 }
+
+
