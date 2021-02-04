@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {Store} from '@ngrx/store';
-import {getLists, getSelectedList} from '../../state/lists';
+import {getLists} from '../../state/lists';
 import {List} from '../../model/list';
 import {Observable} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
@@ -27,7 +27,6 @@ export class ShoppingListComponent {
   public notifications: NotificationData[];
 
   constructor(private store: Store<ListState>, public dialog: MatDialog) {
-
   }
 
   getNotificationForList(id) {
@@ -38,19 +37,19 @@ export class ShoppingListComponent {
     const isNew: boolean = !list;
 
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
-      width: '250px',
-      data: {description: list ? list.description : '', isNew}
+      data: {description: list ? list.description : '', isNew},
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result.delete) {
+        this.store.dispatch(ListActions.removeShareList({id: list.id}));
+        // this.router.navigateByUrl('/'); // TODO
+      } else if (result.data) {
         if (isNew) {
-          this.store.dispatch(ListActions.add(result));
+          this.store.dispatch(ListActions.add(result.data));
         } else {
-          list.description = result.description;
-          this.store.dispatch(ListActions.update({item: list}));
+          this.store.dispatch(ListActions.update({item: {...list, description: result.data.description}}));
         }
-
       }
     });
     event.preventDefault();

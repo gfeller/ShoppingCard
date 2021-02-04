@@ -25,6 +25,12 @@ export const reducer = createReducer(
   on(ListActions.loadList, (state, data) => (listAdapter.updateOne({id: data.id, changes: {isLoading: true}}, state))),
   on(ListActions.loadListSuccess, (state, data) => (listAdapter.updateOne({id: data.id, changes: {isLoading: false}}, state))),
   on(ListActions.selectList, (state, data) => ({...state, selectedListId: data.id})),
+  on(ListActions.removeShareList, (state, data) => {
+    if (data.id === state.selectedListId) {
+      return {...state, selectedListId: null};
+    }
+    return state;
+  }),
 );
 
 

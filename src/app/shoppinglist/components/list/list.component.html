@@ -1,18 +1,14 @@
-<mat-card *ngIf="list">
-  <mat-card-header>
-    <div style="position: absolute; right: 5px; top:5px">
-      <a [href]="'whatsapp://send?text=https://ikaufzetteli.firebaseapp.com/list/share/'+ list.id | safe :'url'"
-         data-action="share/whatsapp/share"><i class="material-icons">share</i></a>
-      <a href="mailto:?subject=Einladung&body=https://ikaufzetteli.firebaseapp.com/list/share/{{list.id}}"><i
-        class="material-icons">mail</i></a>
-      <i class="material-icons" style="color:red; cursor: pointer" (click)="removeList()">delete</i>
-    </div>
-    <form (submit)="addItem()" class="full-width">
-      <mat-form-field class="full-width">
+<div style="position: relative">
+  <div style="position: absolute; right: 5px; top: 5px">
+    <i class="material-icons" style="cursor: pointer" (click)="shareList()">share</i>
+  </div>
+  <div>
+    <form (submit)="addItem()">
+      <mat-form-field>
         <input matInput placeholder="Wir brauchen" #newItem [(ngModel)]="addNewItemText" name="item-text">
       </mat-form-field>
     </form>
-  </mat-card-header>
+  </div>
 
   <mat-list>
     <mat-list-item *ngFor="let item of items" (click)="checkItem(item)" [ngClass]="{'finished': !!item.boughtAt}"
@@ -25,4 +21,4 @@
       <mat-icon *ngIf="!item.boughtAt" (click)="removeItem($event, item)" color="warn">delete</mat-icon>
     </mat-list-item>
   </mat-list>
-</mat-card>
+</div>

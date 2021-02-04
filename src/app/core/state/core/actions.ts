@@ -41,6 +41,9 @@ export const removeMessage = createAction('[CORE] Remove Message',
 export const message = createAction('[CORE] Message',
   props<{ message: string }>());
 
+export const share = createAction('[CORE] Share',
+  props<{ message: string, url: string }>());
+
 export const addError = createAction('[ERROR] Add Error',
   props<{ code: string, message: string }>());
 

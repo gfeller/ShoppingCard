@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>{{data.isNew ? 'Neue Liste erfassen' : 'Liste anpassen'}}</h1>
-<form (submit)="onYesClick(data)">
+<form (submit)="onYesClick()">
   <div mat-dialog-content>
     <mat-form-field>
       <input matInput name="description" [(ngModel)]="data.description" placeholder="Name der Liste" cdkFocusInitial>
@@ -7,6 +7,7 @@
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onNoClick()" type="reset" color="basic">Doch nicht</button>
-    <button mat-raised-button type="submit" color="primary">{{data.isNew ? 'Erstellen' : 'Anpassen'}}</button>
+    <button *ngIf="!data.isNew" mat-raised-button (click)="onDeleteClick()" type="reset" color="warn">Löschen</button>
+    <button mat-raised-button (click)="onYesClick()" color="primary">{{data.isNew ? 'Erstellen' : 'Anpassen'}}</button>
   </div>
 </form>

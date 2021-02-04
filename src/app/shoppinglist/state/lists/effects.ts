@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {mergeMap, withLatestFrom} from 'rxjs/operators';
+import {mergeMap, tap, withLatestFrom} from 'rxjs/operators';
 import {ListService} from '../../services/list.service';
 import * as ListActions from './actions';
 import {Store} from '@ngrx/store';
 import {State} from '../../../core/state';
-import {getSelectedListId} from './index';
+import {getLists, getSelectedListId} from './index';
 import {Router} from '@angular/router';
 import {from, Observable, of} from 'rxjs';
 

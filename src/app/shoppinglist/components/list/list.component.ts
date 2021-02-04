@@ -12,6 +12,7 @@ import {StoreDto} from '../../../core/model/dto';
 import {ListState} from '../../state/lists/reducer';
 import {selectNotificationForList, State} from '../../../core/state';
 import {ItemsActions, ListActions} from '../../state';
+import {ShareService} from '../../../core/services/share.service';
 
 
 @Component({
@@ -56,14 +57,11 @@ export class ListComponent {
   }
 
 
-  constructor(private store: Store<ListState>, private router: Router) {
+  constructor(private store: Store<ListState>, private shareService: ShareService) {
   }
 
-
-  public removeList(list: List) {
-
-    this.store.dispatch(ListActions.removeShareList({id: this.list.id}));
-    this.router.navigateByUrl('/');
+  public shareList() {
+    this.shareService.share('Einladung', `https://ikaufzetteli.firebaseapp.com/list/share/${this.list.id}`);
   }
 
   public addItem(item?: Item) {
