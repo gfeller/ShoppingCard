@@ -12,8 +12,10 @@ interface AddItemDialogComponentData {
   styleUrls: ['./add-item-dialog.component.scss']
 })
 export class AddItemDialogComponent {
+
   constructor(public dialogRef: MatDialogRef<AddItemDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: AddItemDialogComponentData) {
+
   }
 
   onNoClick(): void {
@@ -25,6 +27,6 @@ export class AddItemDialogComponent {
   }
 
   onYesClick(): void {
-    this.dialogRef.close({data : this.data});
+    this.dialogRef.close({data: this.data});
   }
 }

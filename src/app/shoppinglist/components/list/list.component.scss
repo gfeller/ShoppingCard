@@ -1,21 +1,30 @@
-.mat-list-item{
+.mat-list-item {
   display: flex;
 }
 
-.mat-list-item mat-icon{
+.mat-list-item mat-icon {
   margin-left: auto;
   cursor: pointer;
 }
 
-.mat-list-item:nth-of-type(even)
-{
+.mat-list-item:nth-of-type(even) {
   background: lightgray;
 }
 
-:host ::ng-deep .mat-checkbox-layout{
-  flex: 1 1 auto;
+.finished {
+  opacity: 0.5;
 }
 
-.finished{
-  opacity: 0.5;
+.layout {
+
+}
+
+.item-add-form {
+  display: flex;
+  align-items: center;
+
+  :first-child {
+    flex: 1;
+    max-width: min(80%, 1024px);
+  }
 }

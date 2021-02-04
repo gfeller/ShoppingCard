@@ -3,10 +3,11 @@
     <i class="material-icons" style="cursor: pointer" (click)="shareList()">share</i>
   </div>
   <div>
-    <form (submit)="addItem()">
+    <form (submit)="addItem()" class="item-add-form">
       <mat-form-field>
         <input matInput placeholder="Wir brauchen" #newItem [(ngModel)]="addNewItemText" name="item-text">
       </mat-form-field>
+      <button mat-icon-button color="primary" type="submit"><mat-icon>add</mat-icon></button>
     </form>
   </div>
 

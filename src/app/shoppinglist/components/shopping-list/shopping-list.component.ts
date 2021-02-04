@@ -41,14 +41,15 @@ export class ShoppingListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.delete) {
-        this.store.dispatch(ListActions.removeShareList({id: list.id}));
-        // this.router.navigateByUrl('/'); // TODO
-      } else if (result.data) {
-        if (isNew) {
-          this.store.dispatch(ListActions.add(result.data));
-        } else {
-          this.store.dispatch(ListActions.update({item: {...list, description: result.data.description}}));
+      if (result) {
+        if (result.delete) {
+          this.store.dispatch(ListActions.removeShareList({id: list.id}));
+        } else if (result.data) {
+          if (isNew) {
+            this.store.dispatch(ListActions.add(result.data));
+          } else {
+            this.store.dispatch(ListActions.update({item: {...list, description: result.data.description}}));
+          }
         }
       }
     });

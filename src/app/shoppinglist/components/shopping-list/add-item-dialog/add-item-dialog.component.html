@@ -7,7 +7,7 @@
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onNoClick()" type="reset" color="basic">Doch nicht</button>
-    <button *ngIf="!data.isNew" mat-raised-button (click)="onDeleteClick()" type="reset" color="warn">Löschen</button>
-    <button mat-raised-button (click)="onYesClick()" color="primary">{{data.isNew ? 'Erstellen' : 'Anpassen'}}</button>
+    <button mat-raised-button (click)="onYesClick()" color="primary">{{data.isNew ? 'Erstellen' : 'Änderungen übernehmen'}}</button>
+    <app-confirm-button *ngIf="!data.isNew" (delete)="onDeleteClick()"></app-confirm-button>
   </div>
 </form>

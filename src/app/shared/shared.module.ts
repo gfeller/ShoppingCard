@@ -18,11 +18,14 @@ import {RouterModule} from '@angular/router';
 import {MomentModule} from 'ngx-moment';
 import {SafePipe} from './util/safe.pipe';
 import {OnlyAnonymousDirective, OnlyUserDirective} from './security/security.guard';
+import { ConfirmButtonComponent } from './components/confirm-button/confirm-button.component';
 
 const MATERIAL = [MatButtonModule, MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
   MatButtonModule, MatCheckboxModule, MatToolbarModule, MatIconModule, MatTabsModule, MatListModule, MatSnackBarModule];
 
 const DIRECTIVES = [OnlyAnonymousDirective, OnlyUserDirective]
+const COMPONENTS = [ConfirmButtonComponent]
+
 
 @NgModule({
   imports: [
@@ -41,9 +44,10 @@ const DIRECTIVES = [OnlyAnonymousDirective, OnlyUserDirective]
     MomentModule,
     SafePipe,
     ...MATERIAL,
-    ...DIRECTIVES
+    ...DIRECTIVES,
+    ...COMPONENTS
   ],
-  declarations: [SafePipe, ...DIRECTIVES]
+  declarations: [SafePipe, ...DIRECTIVES, ...COMPONENTS]
 })
 export class SharedModule {
 }
