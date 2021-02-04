@@ -1,0 +1,21 @@
+.layout{
+  display: grid;
+  grid-template-areas:
+    "content"
+    "toolbar";
+
+  grid-template-columns: 1fr auto;
+}
+
+.toolbar{
+  grid-area: toolbar;
+}
+
+.content{
+  grid-area: content;
+}
+
+
+.layout{
+
+}

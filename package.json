@@ -30,8 +30,10 @@
     "@ngrx/store-devtools": "^10.1.2",
     "firebase": "^8.2.5",
     "moment": "^2.29.1",
+    "ngx-device-detector": "^2.0.5",
     "ngx-moment": "^3.5.0",
     "rxjs": "~6.6.3",
+    "share-api-polyfill": "^1.0.20",
     "tslib": "^1.14.1",
     "zone.js": "~0.10.3"
   },

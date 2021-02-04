@@ -6,7 +6,6 @@ export const init = createAction('[CORE] INIT');
 export const initSuccess = createAction('[CORE] Init Success');
 
 
-
 export interface NetState {
   online: boolean;
 }
@@ -14,10 +13,12 @@ export interface NetState {
 export const netState = createAction('[CORE] NetState',
   props<NetState>());
 
+export const uiInformationChanged = createAction('[CORE] UI-Information Changed',
+  props<{ info: { isMobile: boolean } }>());
 
 
 export const authChanged = createAction('[CORE] Auth Changed',
-    props<AuthUser>());
+  props<AuthUser>());
 
 export const authUserSettingsChanged = createAction('[CORE] Auth User Settings Change',
   props<AuthUserSettingsChange>());
@@ -30,15 +31,15 @@ export const authConnect = createAction('[CORE] Auth Connect',
 
 
 export const authResetPwd = createAction('[CORE] Auth Reset Pwd',
-  props<{email: string}>());
+  props<{ email: string }>());
 
 export const authResetPwdSuccess = createAction('[CORE] Auth Reset Pwd Success');
 
 export const removeMessage = createAction('[CORE] Remove Message',
-  props<{item: any}>());
+  props<{ item: any }>());
 
 export const message = createAction('[CORE] Message',
-  props<{message: string}>());
+  props<{ message: string }>());
 
 export const addError = createAction('[ERROR] Add Error',
   props<{ code: string, message: string }>());
@@ -59,7 +60,7 @@ export const notificationGrantNotExist = createAction('[CORE] Notification Grant
 export const notificationGrantForbidden = createAction('[CORE] Notification Not Allowed');
 
 export const removeNotificationGrant = createAction('[CORE] Remove Notification Grant',
-  props<{token: string}>() );
+  props<{ token: string }>());
 
 export const removeNotificationGrantSuccess = createAction('[CORE] Remove Notification Grant Success');
 

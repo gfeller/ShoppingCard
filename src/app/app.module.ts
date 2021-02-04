@@ -12,6 +12,10 @@ import {AppEffects} from './core/state/core/app.effects';
 import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {DashboardModule} from './dashboard/dashboard.module';
+import {Store} from '@ngrx/store';
+import {State} from './core/state';
+import {DeviceDetectorService} from 'ngx-device-detector';
+import {uiInformationChanged} from './core/state/core/actions';
 
 @NgModule({
   declarations: [
@@ -32,4 +36,8 @@ import {DashboardModule} from './dashboard/dashboard.module';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  constructor(private coreStore: Store<State>, private deviceService: DeviceDetectorService) {
+    coreStore.dispatch(uiInformationChanged({info: {isMobile: deviceService.isMobile()}}));
+  }
 }

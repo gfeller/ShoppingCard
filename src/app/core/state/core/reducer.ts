@@ -10,6 +10,7 @@ export interface CoreState {
   messages: any[];
   notifications: NotificationData[];
   notificationToken: string;
+  isMobile: boolean;
 }
 
 export const initialState: CoreState = {
@@ -18,6 +19,7 @@ export const initialState: CoreState = {
   messages: [],
   notifications: [],
   notificationToken: null,
+  isMobile: true,
 };
 
 export const reducer = createReducer(
@@ -25,6 +27,7 @@ export const reducer = createReducer(
   on(Actions.init, (state, {}) => ({...initialState})),
   on(Actions.netState, (state, action) => ({...state, online: action.online})),
   on(Actions.netState, (state, action) => ({...state, online: action.online})),
+  on(Actions.uiInformationChanged, (state, action) => ({...state, isMobile: action.info.isMobile})),
   on(Actions.notificationGrantExist, Actions.notificationGrantSuccess, (state, action) => ({...state, notificationToken: action.token})),
   on(Actions.notificationGrantForbidden, Actions.removeNotificationGrant, (state) => ({...state, notificationToken: null})),
   on(Actions.notificationSuccess, (state, action) => ({...state, notifications: [...state.notifications, action]})),
@@ -36,7 +39,10 @@ export const reducer = createReducer(
     };
   }),
   on(Actions.authChanged, (state, action) => ({...state, user: action})),
-  on(Actions.message, (state, action) => ({...state, messages: [...state.messages, {id : new Date().toISOString(), message: action.message, type: action.type}]})),
+  on(Actions.message, (state, action) => ({
+    ...state,
+    messages: [...state.messages, {id: new Date().toISOString(), message: action.message, type: action.type}]
+  })),
   on(Actions.removeMessage, (state, action) => ({...state, messages: state.messages.filter(x => x.id !== action.item.id)})),
 );
 
