@@ -24,6 +24,6 @@ import {ShareComponent} from './components/share/share.component';
   entryComponents: [AddItemDialogComponent]
 })
 export class ShoppinglistModule {
-  constructor(private listService: ListService) {
+  constructor(private listService: ListService) { // Eager
   }
 }

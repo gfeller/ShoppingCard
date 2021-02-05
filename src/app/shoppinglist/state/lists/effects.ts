@@ -48,7 +48,7 @@ export class ShoppingListEffects {
     ofType(ListActions.readList),
     withLatestFrom(this.coreStore.select(getSelectedListId)),
     mergeMap((data) => {
-      if (data[1] == null) {
+      if (data[1] == null && this.router.url === '/') {
         return from(this.router.navigateByUrl(`/list/${data[0].lists[0].id}`));
       }
       return of();

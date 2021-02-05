@@ -34,7 +34,6 @@ export class UiService {
   }
 
   public setHeaderMenu(portal: TemplatePortal) {
-    console.log(portal);
     this.headerMenu.next(portal);
   }
 }
