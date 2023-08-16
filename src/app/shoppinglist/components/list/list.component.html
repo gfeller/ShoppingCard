@@ -1,0 +1,32 @@
+<div class="layout">
+  <mat-list class="content">
+    <mat-list-item *ngFor="let item of items" (click)="checkItem(item)" [ngClass]="{'finished': !!item.boughtAt}"
+                   style="cursor: pointer">
+      <mat-icon *ngIf="!item.boughtAt">done</mat-icon>
+      <mat-icon *ngIf="!!item.boughtAt">add_shopping_cart</mat-icon>
+      <span class="full-width"> {{item.description}}</span>
+      <span *ngIf="!!item.boughtAt" style="white-space: nowrap">{{item.boughtAt.toDate() |   amTimeAgo}}</span>
+      <mat-icon *ngIf="!!item.boughtAt">done</mat-icon>
+      <mat-icon *ngIf="!item.boughtAt" (click)="removeItem($event, item)" color="warn">delete</mat-icon>
+    </mat-list-item>
+    <div *ngIf="items.length == 0" class="blank-slate">
+      Liste ist noch leer!
+    </div>
+  </mat-list>
+
+  <div>
+    <form (submit)="addItem()" class="item-add-form">
+      <mat-form-field>
+        <input matInput placeholder="Wir brauchen" #newItem [(ngModel)]="addNewItemText" name="item-text">
+      </mat-form-field>
+      <button mat-icon-button color="primary" type="submit">
+        <mat-icon>add</mat-icon>
+      </button>
+    </form>
+  </div>
+</div>
+
+<ng-template #templateForParent>
+  <i class="material-icons" style="cursor: pointer" (click)="shareList()">share</i>
+  <i class="material-icons" style="cursor: pointer; margin-left: auto" (click)="showDialog($event, list.item!)">edit</i>
+</ng-template>

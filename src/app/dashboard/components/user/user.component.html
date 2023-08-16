@@ -1,0 +1,112 @@
+<mat-card *ngIf="user">
+  <mat-card-title>
+    Benutzer Informationen
+  </mat-card-title>
+  <mat-card-content>
+    <mat-card *appOnlyUser>
+      <form id="profile-form" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
+        <mat-form-field>
+          <mat-label>E-Mail</mat-label>
+          <input matInput [value]="user.email" disabled>
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="displayName" matInput placeholder="Anzeigename" type="text">
+        </mat-form-field>
+      </form>
+      <mat-card-actions>
+        <button form="profile-form" mat-button type="submit">Änderungen übernehmen</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card *appOnlyUser>
+      <mat-card-title>
+        Password Ändern
+      </mat-card-title>
+      <form id="formPwd" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
+        <mat-form-field>
+          <input formControlName="pwd" matInput placeholder="Passwort Alt" type="password" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="pwdOld" matInput placeholder="Passwort Neu" type="password" autocomplete="off">
+        </mat-form-field>
+      </form>
+      <mat-card-actions>
+        <button form="formPwd" mat-button type="submit" [disabled]="!(changeUserData.valid && changeUserData.touched)">
+          Passwort wechseln
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+
+    <mat-card *appOnlyAnonymous data-test-id="anonymous-login-card">
+      <mat-card-title>
+        Dieser Account ist nicht mit einer E-Mail verbunden. Listen können verloren gehen!
+        Sie können ihren Account mit einem neuem Account verbinden oder sich mit einem bestehemden Account anmelden.
+      </mat-card-title>
+      <mat-card-content>
+        <form id="formRegister" [formGroup]="connectUserData" novalidate>
+          <mat-form-field>
+            <input formControlName="email" matInput placeholder="E-Mail" type="email">
+          </mat-form-field>
+          <mat-form-field>
+            <input formControlName="pwd" matInput placeholder="Passwort" type="password">
+          </mat-form-field>
+          <button mat-flat-button type="submit" (click)="onSubmit(connectUserData.value, true)">
+            Neuer Account erstellen
+          </button>
+          <button mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
+        </form>
+        <mat-card-actions>
+          <button form="formRegister" mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
+        </mat-card-actions>
+      </mat-card-content>
+
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>
+        Passwort vergessen?
+      </mat-card-title>
+      <mat-card-content>
+        <form id="formReset" [formGroup]="pwdResetData" novalidate (ngSubmit)="onReset()">
+          <mat-form-field *appOnlyAnonymous>
+            <input formControlName="email" matInput placeholder="E-Mail" type="email">
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button form="formReset" mat-flat-button type="submit">Passwort zurücksetzten</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>
+        Push-Nachrichten
+      </mat-card-title>
+      <mat-card-content>
+        <ng-template [ngIf]="notificationToken">
+          <p>Push Nachrichten sind aktiviert.</p>
+          <p>
+            Sie erhalten Nachrichten falls neue Einträge hinzugefügt werden.
+          </p>
+        </ng-template>
+        <ng-template [ngIf]="!notificationToken">
+          <p>Push Nachrichten sind deaktiviert.</p>
+          <p>
+            Sie können Push-Nachrichten aktivieren. Sie werden benachrichtet wenn neue Einträge erfasst werden.
+          </p>
+        </ng-template>
+      </mat-card-content>
+      <mat-card-actions>
+        <ng-template [ngIf]="notificationToken">
+          <button mat-flat-button type="submit" (click)="onRemoveNotification()">Keine Benachrichtungen mehr erhalten.
+          </button>
+        </ng-template>
+        <ng-template [ngIf]="!notificationToken">
+          <button mat-flat-button type="submit" (click)="onAddNotification()">Benachrichtungen aktivieren.</button>
+        </ng-template>
+      </mat-card-actions>
+    </mat-card>
+  </mat-card-content>
+
+</mat-card>

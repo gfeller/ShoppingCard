@@ -1,0 +1,47 @@
+.mat-list-item {
+  display: flex;
+}
+
+.mat-list-item mat-icon {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.mat-list-item:nth-of-type(even) {
+  background: lightgray;
+}
+
+.finished {
+  opacity: 0.5;
+}
+
+.layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  height: 100%;
+
+  .content {
+    overflow: auto;
+    flex: 1 1 100%;
+  }
+}
+
+.item-add-form {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+
+  :first-child {
+    flex: 1;
+  }
+}
+
+
+.blank-slate {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

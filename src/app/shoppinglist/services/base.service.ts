@@ -1,0 +1,60 @@
+import {Store} from '@ngrx/store';
+
+import {from, Subscription} from 'rxjs';
+import {DTO} from '../../core/model/dto';
+import {CoreState} from '../../core/state/core/reducer';
+
+import {
+  addDoc,
+  collection,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  DocumentData,
+  Firestore,
+  query,
+  QueryConstraint,
+  updateDoc
+} from '@angular/fire/firestore';
+
+export abstract class BaseService<T extends DTO> {
+  private subscription: Subscription[] = [];
+
+  constructor(protected collectionName: string, protected store: Store<CoreState>, protected db: Firestore) {
+
+  }
+
+  clearSubscription() {
+    this.subscription.forEach(x => x.unsubscribe());
+    this.subscription = [];
+  }
+
+  addSubscription(subscription: Subscription) {
+    this.subscription.push(subscription);
+  }
+
+  get collection() {
+    return collection(this.db, this.collectionName) as CollectionReference<T>;
+  }
+
+  collectionQuery(...queryConstraints: QueryConstraint[]) {
+    const baseCollection = collection(this.db, this.collectionName);
+    return query<T>(baseCollection as CollectionReference<T>, ...queryConstraints); // HACK because no collection<T>
+  }
+
+  getDoc(id: string) {
+    return doc(this.db, `${this.collectionName}/${id}`);
+  }
+
+  async add(item: T) {
+    return from(addDoc(this.collection, item)); // HACK because no collection<T>
+  }
+
+  update(item: T) {
+    return from(updateDoc(this.getDoc(item.id!), item as any));
+  }
+
+  remove(id: string) {
+    return from(deleteDoc(this.getDoc(id)));
+  }
+}
