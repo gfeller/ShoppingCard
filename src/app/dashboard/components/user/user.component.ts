@@ -90,8 +90,8 @@ export class UserComponent implements OnInit {
 @Component({
   selector: 'app-user-page',
   template: `
-    <app-user *ngIf="(user$ | async)!" [user]="(user$ | async)!"
-              [notificationToken]="(notificationToken$ | async)!"></app-user>
+    <app-user *ngIf="user$ | async | notNull" [user]="user$ | async | notNull"
+              [notificationToken]="notificationToken$ | async | notNull"></app-user>
   `,
 })
 export class UserPageComponent implements OnInit {

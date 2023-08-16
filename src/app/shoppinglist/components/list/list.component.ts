@@ -126,7 +126,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-list-page',
   template: `
-    <app-list [list]="(list$ | async)!" [items]="(items$ | async)!" [notifications]="(notifications$ | async)!"></app-list>
+    <app-list [list]="list$ | async | notNull" [items]="items$ | async | notNull" [notifications]="notifications$ | async | notNull"></app-list>
   `,
 })
 export class ListPageComponent implements OnInit {

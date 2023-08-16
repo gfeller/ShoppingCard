@@ -5,9 +5,11 @@
         <mat-icon>home</mat-icon>
       </button>
     </span>
-    <span class="fill-remaining-space"></span>
-    <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
-    <span class="fill-remaining-space"></span>
+    <span style="margin-left: auto"></span>
+    <div>
+       <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
+    </div>
+    <span style="margin-left: auto"></span>
     <div *ngIf="user$ | async as user" style="display: flex; align-items: center">
       <button data-test-id="user-settings" mat-button [routerLink]="['/user']">
         <ng-template [ngIf]="user.isAnonymous">

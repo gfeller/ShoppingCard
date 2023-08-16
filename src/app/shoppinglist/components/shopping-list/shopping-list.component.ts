@@ -39,7 +39,7 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
     const templatePortal = new TemplatePortal(this.templateForParent, this.viewContainerRef);
     setTimeout(() => {
       this.uiService.setSubMenu(templatePortal);
-    });
+    }, 0);
   }
 
   ngOnDestroy(): void {
@@ -71,7 +71,7 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-shopping-list-page',
   template: `
-    <app-shopping-list [lists]="(lists$ | async)!" [notifications]="(notifications$ | async)!"></app-shopping-list>
+    <app-shopping-list [lists]="lists$ | async | notNull" [notifications]="notifications$ | async | notNull"></app-shopping-list>
   `,
 })
 export class ShoppingListPageComponent implements OnInit {

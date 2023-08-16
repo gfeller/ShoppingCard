@@ -11,6 +11,7 @@ import {take} from 'rxjs/operators';
 
 import {CoreState} from '../state/core/reducer';
 import * as CoreActions from '../state/core/actions';
+import {NotificationData} from "../state/core/actions";
 
 
 @Injectable({
@@ -21,13 +22,7 @@ export class MessagingService {
 
 
   constructor(private db: Firestore, private afAuth: Auth, private store: Store<CoreState>) {
-
-    // TODO
-    isSupported().then(supported => {
-      if(supported){
-        this.messaging = getMessaging();
-      }
-    })
+    this.messaging = getMessaging();
   }
 
   async init(){
@@ -83,8 +78,8 @@ export class MessagingService {
 
   receiveMessage() {
     if (this.messaging != null) {
-      onMessage(this.messaging, (payload) => {
-        this.store.dispatch(CoreActions.notificationSuccess(payload as any)); // TODO any cast
+      onMessage(this.messaging, (payload: unknown) => {
+        this.store.dispatch(CoreActions.notificationSuccess(payload as NotificationData));
       });
     }
   }

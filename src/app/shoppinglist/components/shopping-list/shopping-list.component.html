@@ -1,15 +1,18 @@
+
+
 <router-outlet #myOutlet="outlet"></router-outlet>
 <div [hidden]="myOutlet.isActivated" style="padding-top: min(50%, 160px); text-align: center">Keine Liste ausgewählt.
   Erstellen Sie doch eine neue!
 </div>
-
-
 <ng-template #templateForParent>
-  <nav mat-tab-nav-bar>
-    <a mat-tab-link
+
+  <mat-tab-nav-panel #tabPanel>  </mat-tab-nav-panel>
+  <nav mat-tab-nav-bar  [tabPanel]="tabPanel">
+      <a mat-tab-link
        *ngFor="let list of lists"
-       [routerLink]="'/list/'+list.id"
-       routerLinkActive #rla="routerLinkActive"
+       [routerLink]="['/list/'+list.id]"
+       routerLinkActive
+       #rla="routerLinkActive"
        [active]="rla.isActive">
 
       <span [matBadgeHidden]="!getNotificationForList(list.id).length"

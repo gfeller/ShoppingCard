@@ -20,6 +20,7 @@ import {OnlyAnonymousDirective, OnlyUserDirective} from './security/security.gua
 import {ConfirmButtonComponent} from './components/confirm-button/confirm-button.component';
 import {PortalModule} from '@angular/cdk/portal';
 import {MomentModule} from "ngx-moment";
+import {NotNullPipe} from "./util/not-null.pipe";
 
 const MATERIAL = [MatButtonModule, MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
   MatButtonModule, MatCheckboxModule, MatToolbarModule, MatIconModule, MatTabsModule, MatListModule, MatSnackBarModule];
@@ -47,11 +48,12 @@ const COMPONENTS = [ConfirmButtonComponent];
     PortalModule,
     MomentModule,
     SafePipe,
+    NotNullPipe,
     ...MATERIAL,
     ...DIRECTIVES,
     ...COMPONENTS
   ],
-  declarations: [SafePipe, ...DIRECTIVES, ...COMPONENTS]
+  declarations: [SafePipe, NotNullPipe, ...DIRECTIVES, ...COMPONENTS]
 })
 export class SharedModule {
 }
