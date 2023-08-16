@@ -39,7 +39,7 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
     const templatePortal = new TemplatePortal(this.templateForParent, this.viewContainerRef);
     setTimeout(() => {
       this.uiService.setSubMenu(templatePortal);
-    }, 0);
+    }, 1);
   }
 
   ngOnDestroy(): void {
