@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store';
 
 import {Item, ItemAddViewModel} from '../model/item';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import {BaseService} from './base.service';
 import {of} from 'rxjs';
 import {Timestamp} from 'firebase/firestore';

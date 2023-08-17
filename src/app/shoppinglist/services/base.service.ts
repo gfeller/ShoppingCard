@@ -20,7 +20,7 @@ import {
 export abstract class BaseService<T extends DTO> {
   private subscription: Subscription[] = [];
 
-  constructor(protected collectionName: string, protected store: Store<CoreState>, protected db: Firestore) {
+  protected constructor(protected collectionName: string, protected store: Store<CoreState>, protected db: Firestore) {
 
   }
 
@@ -47,7 +47,7 @@ export abstract class BaseService<T extends DTO> {
   }
 
   async add(item: T) {
-    return from(addDoc(this.collection, item)); // HACK because no collection<T>
+    return from(addDoc(this.collection, item));
   }
 
   update(item: T) {

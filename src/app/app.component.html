@@ -1,5 +1,4 @@
 <ng-template [ngIf]="!(ready$ | async)" [ngIfElse]="loaded">
-  {{ready$ | async}}
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 <ng-template #loaded>
