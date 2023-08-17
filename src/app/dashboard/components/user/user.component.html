@@ -1,35 +1,43 @@
-<mat-card *ngIf="user">
-  <mat-card-title>
-    Benutzer Informationen
-  </mat-card-title>
-  <mat-card-content>
+<ng-template [ngIf]="user">
+  <div style="display: flex; align-items: center; justify-content: center">
+  <div style="max-width: 700px">
     <mat-card *appOnlyUser>
-      <form id="profile-form" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
-        <mat-form-field>
-          <mat-label>E-Mail</mat-label>
-          <input matInput [value]="user.email" disabled>
-        </mat-form-field>
-        <mat-form-field>
-          <input formControlName="displayName" matInput placeholder="Anzeigename" type="text">
-        </mat-form-field>
-      </form>
+      <mat-card-header>
+        Benutzer Informationen
+      </mat-card-header>
+      <mat-card-content>
+        <form id="profile-form" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
+          <mat-form-field>
+            <mat-label>E-Mail</mat-label>
+            <input matInput [value]="user.email" disabled>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Anzeigename</mat-label>
+            <input formControlName="displayName" matInput placeholder="Anzeigename" type="text">
+          </mat-form-field>
+        </form>
+      </mat-card-content>
       <mat-card-actions>
         <button form="profile-form" mat-button type="submit">Änderungen übernehmen</button>
       </mat-card-actions>
     </mat-card>
 
     <mat-card *appOnlyUser>
-      <mat-card-title>
+      <mat-card-header>
         Password Ändern
-      </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
       <form id="formPwd" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
         <mat-form-field>
-          <input formControlName="pwd" matInput placeholder="Passwort Alt" type="password" autocomplete="off">
+          <mat-label>Passwort Alt</mat-label>
+          <input formControlName="pwd" matInput type="password" autocomplete="off">
         </mat-form-field>
         <mat-form-field>
-          <input formControlName="pwdOld" matInput placeholder="Passwort Neu" type="password" autocomplete="off">
+          <mat-label>Passwort Neu</mat-label>
+          <input formControlName="pwdOld" matInput type="password" autocomplete="off">
         </mat-form-field>
       </form>
+      </mat-card-content>
       <mat-card-actions>
         <button form="formPwd" mat-button type="submit" [disabled]="!(changeUserData.valid && changeUserData.touched)">
           Passwort wechseln
@@ -39,10 +47,10 @@
 
 
     <mat-card *appOnlyAnonymous data-test-id="anonymous-login-card">
-      <mat-card-title>
+      <mat-card-header>
         Dieser Account ist nicht mit einer E-Mail verbunden. Listen können verloren gehen!
         Sie können ihren Account mit einem neuem Account verbinden oder sich mit einem bestehemden Account anmelden.
-      </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <form id="formRegister" [formGroup]="connectUserData" novalidate>
           <mat-form-field>
@@ -56,17 +64,17 @@
           </button>
           <button mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
         </form>
-        <mat-card-actions>
-          <button form="formRegister" mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
-        </mat-card-actions>
       </mat-card-content>
+      <mat-card-actions>
+        <button form="formRegister" mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
+      </mat-card-actions>
 
     </mat-card>
 
     <mat-card>
-      <mat-card-title>
+      <mat-card-header>
         Passwort vergessen?
-      </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <form id="formReset" [formGroup]="pwdResetData" novalidate (ngSubmit)="onReset()">
           <mat-form-field *appOnlyAnonymous>
@@ -80,9 +88,9 @@
     </mat-card>
 
     <mat-card>
-      <mat-card-title>
+      <mat-card-header>
         Push-Nachrichten
-      </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <ng-template [ngIf]="notificationToken">
           <p>Push Nachrichten sind aktiviert.</p>
@@ -107,6 +115,6 @@
         </ng-template>
       </mat-card-actions>
     </mat-card>
-  </mat-card-content>
-
-</mat-card>
+  </div>
+  </div>
+</ng-template>

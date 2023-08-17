@@ -1,63 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-
 body{
   padding: 0;
   margin: 0;
   height: 100vh;
 }
 
-.fill-remaining-space {
-  flex: 1 1 auto;
-}
-
 .full-width {
   width: 100%;
 }
-
-.mat-tab-links {
-  overflow-x: auto;
-}
-
-.mat-tab-link {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-sizing: content-box !important;
-}
-
-.mat-tab-link > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (max-width: 599px) {
-  .mat-tab-links {
-    flex-wrap: wrap;
-    align-content: flex-start;
-  }
-
-  .mat-tab-links > * {
-    flex: 1 1 45% !important;;
-    padding: 5px !important;;
-    width: 50% !important;
-    box-sizing: border-box;
-    display: inline-flex !important;
-  }
-
-  .mat-tab-link {
-    padding: 5px;
-    width: 30px;
-    max-width: 30px;
-  }
-
-  .mat-dialog-actions > *, .mat-dialog-actions button{
-    width: 100%;
-    margin: 0 !important;
-  }
-}
-
-
-

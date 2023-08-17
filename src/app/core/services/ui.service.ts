@@ -16,7 +16,7 @@ export class UiService {
   public subMenu: BehaviorSubject<TemplatePortal | null> = new BehaviorSubject<TemplatePortal | null>(null);
   public headerMenu: BehaviorSubject<TemplatePortal | null > = new BehaviorSubject<TemplatePortal | null>(null);
 
-  constructor(private coreStore: Store<State>, private deviceService: DeviceDetectorService) {
+  constructor(coreStore: Store<State>, private deviceService: DeviceDetectorService) {
     coreStore.dispatch(uiInformationChanged({info: {isMobile: deviceService.isMobile()}}));
   }
 
