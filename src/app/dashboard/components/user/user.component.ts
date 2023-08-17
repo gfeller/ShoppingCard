@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthConnect, AuthUser} from '../../../core/state/core/model';
 import {selectNotificationToken, selectUser, State} from '../../../core/state';
 import * as CoreActions from '../../../core/state/core/actions';
+import {MessagingService} from "../../../core/services/messaging.service";
 
 
 @Component({
@@ -32,7 +33,7 @@ export class UserComponent implements OnInit {
 
 
   @Input()
-  public notificationToken!: string;
+  public notificationToken: string | null;
 
 
   constructor(private fb: FormBuilder, private store: Store<State>) {
@@ -61,7 +62,7 @@ export class UserComponent implements OnInit {
   }
 
   onRemoveNotification() {
-    this.store.dispatch(CoreActions.removeNotificationGrant({token: this.notificationToken}));
+    this.store.dispatch(CoreActions.removeNotificationGrant({token: this.notificationToken!}));
   }
 
   onAddNotification() {
@@ -91,12 +92,12 @@ export class UserComponent implements OnInit {
   selector: 'app-user-page',
   template: `
     <app-user *ngIf="user$ | async | notNull" [user]="user$ | async | notNull"
-              [notificationToken]="notificationToken$ | async | notNull"></app-user>
+              [notificationToken]="notificationToken$ | async"></app-user>
   `,
 })
 export class UserPageComponent implements OnInit {
   public user$: Observable<AuthUser> = new Observable<AuthUser>();
-  public notificationToken$: Observable<string> = new Observable<string>();
+  public notificationToken$: Observable<string | null> = new Observable<string | null>();
 
   constructor(private store: Store<State>) {
     this.user$ = store.select(selectUser);

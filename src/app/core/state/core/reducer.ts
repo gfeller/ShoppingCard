@@ -11,6 +11,10 @@ export interface CoreState {
   notifications: NotificationData[];
   notificationToken: string | null;
   isMobile: boolean;
+  init: {
+    auth: boolean,
+    messaging: boolean,
+  }
 }
 
 export const initialState: CoreState = {
@@ -20,6 +24,10 @@ export const initialState: CoreState = {
   notifications: [],
   notificationToken: null,
   isMobile: true,
+  init: {
+    auth: false,
+    messaging: false,
+  }
 };
 
 export const reducer = createReducer(
@@ -44,6 +52,8 @@ export const reducer = createReducer(
     messages: [...state.messages, {id: new Date().toISOString(), message: action.message, type: action.type}]
   })),
   on(Actions.removeMessage, (state, action) => ({...state, messages: state.messages.filter(x => x.id !== action.item.id)})),
+  on(Actions.initSuccessMessaging, (state, {}) => ({...state, init: {...state.init,messaging: true } })),
+  on(Actions.initSuccessAuth, (state, {}) => ({...state, init: {...state.init,auth: true } })),
 );
 
 

@@ -41,34 +41,24 @@ export const removeMessage = createAction('[CORE] Remove Message',
 export const message = createAction('[CORE] Message',
   props<{ message: string }>());
 
-export const share = createAction('[CORE] Share',
-  props<{ message: string, url: string }>());
-
-export const addError = createAction('[ERROR] Add Error',
-  props<{ code: string, message: string }>());
-
-export const authConnectError = createAction('[ERROR] Auth Error Connect',
-  props<MessageData>());
+export const share = createAction('[CORE] Share', props<{ message: string, url: string }>());
+export const addError = createAction('[ERROR] Add Error', props<{ code: string, message: string }>());
+export const authConnectError = createAction('[ERROR] Auth Error Connect', props<MessageData>());
 
 export const notificationGrantRequest = createAction('[CORE] Notification Request');
+export const notificationGrantSuccess = createAction('[CORE] Notification Granted', props<{ token: string }>());
+export const notificationGrantExist = createAction('[CORE] Notification Granted Exist', props<{ token: string }>());
 
-export const notificationGrantSuccess = createAction('[CORE] Notification Granted',
-  props<{ token: string }>());
+export const initSuccessMessaging = createAction('[CORE] INIT MESSAGING');
+export const initSuccessAuth = createAction('[CORE] INIT AUTH');
 
-export const notificationGrantExist = createAction('[CORE] Notification Granted Exist',
-  props<{ token: string }>());
 
 export const notificationGrantNotExist = createAction('[CORE] Notification Granted Not Exist');
-
 export const notificationGrantForbidden = createAction('[CORE] Notification Not Allowed');
-
-export const removeNotificationGrant = createAction('[CORE] Remove Notification Grant',
-  props<{ token: string }>());
-
+export const removeNotificationGrant = createAction('[CORE] Remove Notification Grant', props<{ token: string }>());
 export const removeNotificationGrantSuccess = createAction('[CORE] Remove Notification Grant Success');
 
 export const notificationSuccess = createAction('[CORE] Add Notification', props<NotificationData>());
-
 export const removeNotification = createAction('[CORE] Remove Notification', props<RemoveNotification>());
 
 

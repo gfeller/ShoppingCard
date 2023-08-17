@@ -23,7 +23,6 @@ import {
   removeNotificationGrant,
   removeNotificationGrantSuccess
 } from './actions';
-import {AuthConnect, AuthUserSettingsChange} from "./model";
 
 
 @Injectable()

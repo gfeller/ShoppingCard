@@ -31,6 +31,7 @@ export class AuthService {
       if (user === null) {
         signInAnonymously(this.afAuth);
       } else {
+        state.dispatch(CoreActions.initSuccessAuth())
         state.dispatch(CoreActions.authChanged(new AuthUser(user)));
       }
     });

@@ -21,8 +21,9 @@ import {ConfirmButtonComponent} from './components/confirm-button/confirm-button
 import {PortalModule} from '@angular/cdk/portal';
 import {MomentModule} from "ngx-moment";
 import {NotNullPipe} from "./util/not-null.pipe";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
-const MATERIAL = [MatButtonModule, MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
+const MATERIAL = [ MatProgressBarModule, MatButtonModule, MatBadgeModule, MatInputModule, MatFormFieldModule, MatCardModule, MatDialogModule, MatMenuModule,
   MatButtonModule, MatCheckboxModule, MatToolbarModule, MatIconModule, MatTabsModule, MatListModule, MatSnackBarModule];
 
 const DIRECTIVES = [OnlyAnonymousDirective, OnlyUserDirective];

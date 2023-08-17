@@ -3,7 +3,7 @@ import {deleteToken, getMessaging, getToken, isSupported, Messaging, onMessage} 
 import 'firebase/messaging';
 
 import {Auth, authState} from '@angular/fire/auth';
-import {collection, deleteDoc, doc, Firestore, setDoc} from '@angular/fire/firestore';
+import {collection, deleteDoc, doc, Firestore, getDoc, setDoc} from '@angular/fire/firestore';
 
 import {Store} from '@ngrx/store';
 import {defer, from, Observable} from 'rxjs';
@@ -20,17 +20,24 @@ import {NotificationData} from "../state/core/actions";
 export class MessagingService {
   private messaging: Messaging | undefined;
 
-
   constructor(private db: Firestore, private afAuth: Auth, private store: Store<CoreState>) {
-    this.messaging = getMessaging();
+
   }
 
   async init(){
-    if (await isSupported()) {
+    if(await isSupported()) {
       this.messaging = getMessaging();
-    }
-  }
 
+      const token = await this.getToken();
+      if (token) {
+        this.store.dispatch(CoreActions.notificationGrantExist({token: token}))
+      }
+
+      this.receiveMessage()
+    }
+
+    this.store.dispatch(CoreActions.initSuccessMessaging())
+  }
 
   updateToken(token: string) {
     authState(this.afAuth).pipe(take(1)).subscribe(user => {
@@ -41,9 +48,14 @@ export class MessagingService {
     });
   }
 
+
+  async getToken() {
+    return getToken(this.messaging!);
+  }
+
   async removeToken() {
     const user = await this.afAuth.currentUser!;
-    deleteDoc(doc(collection(this.db, 'fcmTokens'), user.uid));
+    await deleteDoc(doc(collection(this.db, 'fcmTokens'), user.uid));
   }
 
   requestPermission() {

@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Observable} from 'rxjs';
 import {AuthUser} from './core/state/core/model';
 import {Store} from '@ngrx/store';
-import {selectIsMobile, selectIsOnline, selectMessages, selectUser, State} from './core/state';
+import {selectIsMobile, selectIsOnline, selectIsReady, selectMessages, selectUser, State} from './core/state';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import * as CoreActions from './core/state/core/actions';
 import {UiService} from './core/services/ui.service';
@@ -11,13 +11,13 @@ import {UiService} from './core/services/ui.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   private openSnackbar = false;
 
   isOnline$: Observable<boolean>;
   isMobile$: Observable<boolean>;
+  ready$: Observable<boolean>;
   user$: Observable<AuthUser | null | undefined>;
 
 
@@ -25,6 +25,7 @@ export class AppComponent {
     this.isOnline$ = store.select(selectIsOnline);
     this.isMobile$ = store.select(selectIsMobile)
     this.user$ = store.select(selectUser);
+    this.ready$ = store.select(selectIsReady);
 
 
     store.select(selectMessages).subscribe(messages => {

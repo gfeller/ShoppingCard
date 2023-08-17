@@ -10,7 +10,7 @@ import {getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {enableIndexedDbPersistence, getFirestore, initializeFirestore, provideFirestore, persistentLocalCache} from '@angular/fire/firestore';
 import {environment} from '../../environments/environment';
 import {GlobalErrorHandler} from './services/global-error.handler';
-import {StoreModule} from '@ngrx/store';
+import {Store, StoreModule} from '@ngrx/store';
 import {metaReducers, reducers} from './state';
 import {UiService} from './services/ui.service';
 import {getMessaging, provideMessaging} from '@angular/fire/messaging';
@@ -30,9 +30,7 @@ import {getMessaging, provideMessaging} from '@angular/fire/messaging';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideMessaging(() => getMessaging()),
     provideFirestore(() => {
-      //const firestore = getFirestore(getApp());
       return initializeFirestore(getApp(), {localCache: persistentLocalCache({})});
-      //  return firestore;
     }),
     provideAuth(() => {
       return initializeAuth(getApp(), {
@@ -49,7 +47,9 @@ import {getMessaging, provideMessaging} from '@angular/fire/messaging';
   ]
 })
 export class CoreModule {
-  constructor(uiService: UiService, onlineService: OnlineService, authService: AuthService, msgService: MessagingService) /*Eager*/ {
-    msgService.receiveMessage();
+  constructor(uiService: UiService, onlineService: OnlineService, authService: AuthService, msgService: MessagingService, store: Store) /*Eager*/ {
+    msgService.init().then(x=>{
+       console.log("Messaging ready")
+    });
   }
 }
