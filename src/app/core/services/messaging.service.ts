@@ -50,8 +50,9 @@ export class MessagingService {
 
 
   async getToken() {
-    return getToken(this.messaging!);
+    return getToken(this.messaging!).catch(x => undefined);
   }
+
 
   async removeToken() {
     const user = await this.afAuth.currentUser!;
@@ -59,6 +60,7 @@ export class MessagingService {
   }
 
   requestPermission() {
+
     return from(Notification.requestPermission()
       .then((value) => {
         if (value === 'default') {
