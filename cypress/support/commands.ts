@@ -4,11 +4,21 @@ declare namespace Cypress {
   }
 }
 
+
 Cypress.Commands.add('deleteDatabase', () => {
   return cy.window().then(x => {
-    x.indexedDB.deleteDatabase('firebase-installations-database');
-    x.indexedDB.deleteDatabase('firebase-messaging-database');
-    x.indexedDB.deleteDatabase('firebaseLocalStorageDb');
-    x.indexedDB.deleteDatabase('firestore/[DEFAULT]/ikaufzetteli/main');
+    return window.indexedDB.databases().then(databases => {
+        return   Promise.all(
+          databases.map(
+            ({name}) =>
+              new Promise((resolve, reject) => {
+                const request = window.indexedDB.deleteDatabase(name!);
+                request.addEventListener('success', resolve);
+                request.addEventListener('blocked', resolve);
+                request.addEventListener('error', reject);
+              }),
+          ),
+        );
+    })
   });
 });
