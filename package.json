@@ -12,7 +12,7 @@
     "cypress:run": "cypress run",
     "cypress:start": "start-server-and-test start http://localhost:4200 cypress:open",
     "deploy:hosting": "firebase deploy --only hosting",
-    "emulator": "firebase emulators:start"
+    "emulator": "firebase emulators:start  --inspect-functions"
   },
   "private": true,
   "dependencies": {

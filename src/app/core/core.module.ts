@@ -26,14 +26,9 @@ import {GlobalErrorHandler} from './services/global-error.handler';
 import {Store, StoreModule} from '@ngrx/store';
 import {metaReducers, reducers} from './state';
 import {UiService} from './services/ui.service';
-import {getMessaging, provideMessaging} from '@angular/fire/messaging';
+import {getMessaging, provideMessaging, getToken} from '@angular/fire/messaging';
 
-import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
-import { USE_EMULATOR as USE_DATABASE_EMULATOR } from '@angular/fire/compat/database';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
-import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
-
 
 console.log(environment.useEmulators);
 
@@ -49,7 +44,11 @@ console.log(environment.useEmulators);
       }
     }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideMessaging(() => getMessaging()),
+    provideMessaging(() => {
+      const messsage = getMessaging();
+      getToken(messsage, {vapidKey: "BDVuY72ImQjzouaS9SpWPaORCPqOl72AszG8dtFCVmhFrQscoGwOqVDe50AMIak9hbMIhXpHrJceD_5ANB0oVRc"})
+      return messsage;
+    }),
     provideFirestore(() => {
       const fireStore =  initializeFirestore(getApp(), {localCache: persistentLocalCache({})});;
       if (environment.useEmulators) {

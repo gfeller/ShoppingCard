@@ -1,48 +1,61 @@
-/* // TODO make it work with 9.0.1 -> Problem with ESM
-import {initializeApp} from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js';
-import {
-  getMessaging,
-  onBackgroundMessage,
-  isSupported
-} from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-messaging-sw.js';
+// Import and configure the Firebase SDK
+// These scripts are made available when the app is served or deployed on Firebase Hosting
+// If you do not serve/host your project using Firebase Hosting see https://firebase.google.com/docs/web/setup
+/*
+importScripts('/__/firebase/9.2.0/firebase-app-compat.js');
+importScripts('/__/firebase/9.2.0/firebase-messaging-compat.js');
+importScripts('/__/firebase/init.js');
+
+const messaging = firebase.messaging();*/
 
 
-const firebaseApp = initializeApp({
-  apiKey: "AIzaSyBYzkfzpJ4t1AvyNWZKSwr2vF4laPa9v-8",
-  authDomain: "ikaufzetteli.firebaseapp.com",
-  databaseURL: "https://ikaufzetteli.firebaseio.com",
-  projectId: "ikaufzetteli",
-  storageBucket: "ikaufzetteli.appspot.com",
-  messagingSenderId: "477279744354",
-  appId: "1:477279744354:web:2fff0adf68cbc535bdbc3b"
-});
+
+/**
+ * Here is is the code snippet to initialize Firebase Messaging in the Service
+ * Worker when your app is not hosted on Firebase Hosting.
+
+ // Give the service worker access to Firebase Messaging.
+ // Note that you can only use Firebase Messaging here. Other Firebase libraries
+ // are not available in the service worker.
+  */
+ importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-app-compat.js');
+ importScripts('https://www.gstatic.com/firebasejs/9.2.0/firebase-messaging-compat.js');
+
+ // Initialize the Firebase app in the service worker by passing in
+ // your app's Firebase config object.
+ // https://firebase.google.com/docs/web/setup#config-object
+ firebase.initializeApp({
+   apiKey: 'AIzaSyBYzkfzpJ4t1AvyNWZKSwr2vF4laPa9v-8',
+   authDomain: 'ikaufzetteli.firebaseapp.com',
+   databaseURL: 'https://ikaufzetteli.firebaseio.com',
+   projectId: 'ikaufzetteli',
+   storageBucket: 'ikaufzetteli.appspot.com',
+   messagingSenderId: '477279744354',
+   appId: '1:477279744354:web:2fff0adf68cbc535bdbc3b'
+ });
+
+ // Retrieve an instance of Firebase Messaging so that it can handle background
+ // messages.
+ const messaging = firebase.messaging();
 
 
-isSupported().then(isSupported => {
-  if (isSupported) {
-    const messaging = getMessaging(firebaseApp);
+// If you would like to customize notifications that are received in the
+// background (Web app is closed or not in browser focus) then you should
+// implement this optional method.
+// Keep in mind that FCM will still show notification messages automatically
+// and you should use data messages for custom notifications.
+// For more info see:
+// https://firebase.google.com/docs/cloud-messaging/concept-options
+/*
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // Customize notification here
+  const notificationTitle = 'Background Message Title';
+  const notificationOptions = {
+    body: 'Background Message body.',
+    icon: '/firebase-logo.png'
+  };
 
-    onBackgroundMessage(messaging, ({notification: {title, body, image}}) => {
-      self.registration.showNotification(title, {body, icon: image || '/assets/icons/icon-72x72.png'});
-    });
-  }
-});
-*/
-
-importScripts('https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/8.2.5/firebase-messaging.js');
-
-
-firebase.initializeApp({
-  apiKey: "AIzaSyBYzkfzpJ4t1AvyNWZKSwr2vF4laPa9v-8",
-  authDomain: "ikaufzetteli.firebaseapp.com",
-  databaseURL: "https://ikaufzetteli.firebaseio.com",
-  projectId: "ikaufzetteli",
-  storageBucket: "ikaufzetteli.appspot.com",
-  messagingSenderId: "477279744354",
-  appId: "1:477279744354:web:2fff0adf68cbc535bdbc3b"
-});
-
-if (firebase.messaging.isSupported()) {
-  const messaging = firebase.messaging();
-}
+  self.registration.showNotification(notificationTitle,
+    notificationOptions);
+});*/

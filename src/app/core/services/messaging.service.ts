@@ -12,6 +12,7 @@ import {take} from 'rxjs/operators';
 import {CoreState} from '../state/core/reducer';
 import * as CoreActions from '../state/core/actions';
 import {NotificationData} from "../state/core/actions";
+import {environment} from '../../../environments/environment';
 
 
 @Injectable({
@@ -28,10 +29,7 @@ export class MessagingService {
     if(await isSupported()) {
       this.messaging = getMessaging();
 
-      const token = await this.getToken();
-      if (token) {
-        this.store.dispatch(CoreActions.notificationGrantExist({token: token}))
-      }
+      await this.getTokenAndSendToServer();
 
       this.receiveMessage()
     }
@@ -49,14 +47,17 @@ export class MessagingService {
   }
 
 
-  async getToken() {
-    return getToken(this.messaging!).catch(x => undefined);
-  }
-
-
   async removeToken() {
     const user = await this.afAuth.currentUser!;
     await deleteDoc(doc(collection(this.db, 'fcmTokens'), user.uid));
+  }
+
+  async getTokenAndSendToServer() {
+    const token = await getToken(this.messaging!, {vapidKey: environment.vapidKey})
+    if(token) {
+      this.updateToken(token);
+      this.store.dispatch(CoreActions.notificationGrantSuccess({token}));
+    }
   }
 
   requestPermission() {
@@ -73,8 +74,8 @@ export class MessagingService {
         return getToken(this.messaging!);
       })
       .then(token => {
-        this.updateToken(token);
-        this.store.dispatch(CoreActions.notificationGrantSuccess({token}));
+        return this.getTokenAndSendToServer()
+      }).then(() => {
         this.store.dispatch(CoreActions.message({message: 'Danke für Ihre Zustimmung'}));
       })
       .catch((err) => {
