@@ -11,7 +11,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:start": "start-server-and-test start http://localhost:4200 cypress:open",
-    "deploy:hosting": "firebase deploy --only hosting"
+    "deploy:hosting": "firebase deploy --only hosting",
+    "emulator": "firebase emulators:start"
   },
   "private": true,
   "dependencies": {

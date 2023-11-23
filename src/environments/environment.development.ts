@@ -1,4 +1,5 @@
 export const environment = {
+  useEmulators: false,
   firebase: {
     apiKey: 'AIzaSyBYzkfzpJ4t1AvyNWZKSwr2vF4laPa9v-8',
     authDomain: 'ikaufzetteli.firebaseapp.com',

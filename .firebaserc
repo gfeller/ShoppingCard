@@ -1,6 +1,7 @@
 {
   "projects": {
-    "main": "ikaufzetteli"
+    "main": "ikaufzetteli",
+    "default": "ikaufzetteli"
   },
   "targets": {},
   "etags": {}
