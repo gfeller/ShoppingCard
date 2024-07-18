@@ -1,4 +1,4 @@
-import {ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, importProvidersFrom, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MessagingService} from './services/messaging.service';
 import {OnlineService} from './services/online.service';
@@ -43,6 +43,12 @@ console.log(environment.useEmulators);
         strictActionImmutability: true
       }
     }),
+  ],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
+    },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideMessaging(() => {
       const messsage = getMessaging();
@@ -73,12 +79,6 @@ console.log(environment.useEmulators);
       }
       return functions;
     }),
-  ],
-  providers: [
-    {
-      provide: ErrorHandler,
-      useClass: GlobalErrorHandler
-    }
   ]
 })
 export class CoreModule {

@@ -39,7 +39,7 @@ export abstract class BaseService<T extends DTO> {
 
   collectionQuery(...queryConstraints: QueryConstraint[]) {
     const baseCollection = collection(this.db, this.collectionName);
-    return query<T>(baseCollection as CollectionReference<T>, ...queryConstraints); // HACK because no collection<T>
+    return query<T, T>(baseCollection as CollectionReference<T,T>, ...queryConstraints); // HACK because no collection<T>
   }
 
   getDoc(id: string) {
