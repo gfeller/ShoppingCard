@@ -3,12 +3,15 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 @Component({
   selector: 'app-confirm-button',
   template: `
-    <button mat-raised-button *ngIf="!small" (click)="onDelete()" type="button"
-            color="warn">{{confirmed ? "Löschen bestätigen" : "Löschen"}}</button>
-    <button mat-icon-button *ngIf="small" (click)="onDelete()" type="button" color="warn">
-      <mat-icon>{{confirmed ? 'delete_forever' : 'delete'}}</mat-icon>
-    </button>
-  `
+    @if (small) {
+      <button mat-icon-button (click)="onDelete()" type="button" color="warn">
+        <mat-icon>{{ confirmed ? 'delete_forever' : 'delete' }}</mat-icon>
+      </button>
+    } @else {
+      <button mat-raised-button (click)="onDelete()" type="button"
+              color="warn">{{ confirmed ? "Löschen bestätigen" : "Löschen" }}
+      </button>
+    }  `
 })
 export class ConfirmButtonComponent implements OnInit {
 

@@ -26,20 +26,22 @@ import {UiService} from './core/services/ui.service';
             <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
           </div>
           <span style="margin-left: auto"></span>
-          <div *ngIf="user$ | async as user" style="display: flex; align-items: center">
-            <button data-test-id="user-settings" mat-button [routerLink]="['/user']">
-              <ng-template [ngIf]="user.isAnonymous">
-                <div style="position: relative;display: flex;align-items: center;">
-                  <mat-icon style="position: relative;transform: rotate(2.5rad)">link</mat-icon>
-                  <mat-icon style="position: absolute;color: red;transform: scale(1.2,1.2);">not_interested</mat-icon>
-                  <span data-test-id="user-name" style="margin-left: 5px">{{user?.uid?.substring(0, 10)}}</span>
-                </div>
-              </ng-template>
-              <ng-template [ngIf]="!user.isAnonymous">
-                <span data-test-id="user-name">{{user?.displayName || user?.email}}</span>
-              </ng-template>
-            </button>
-          </div>
+          @if(user$ | async; as user){
+            <div style="display: flex; align-items: center">
+              <button data-test-id="user-settings" mat-button [routerLink]="['/user']">
+                @if(user.isAnonymous){
+                  <div style="position: relative;display: flex;align-items: center;">
+                    <mat-icon style="position: relative;transform: rotate(2.5rad)">link</mat-icon>
+                    <mat-icon style="position: absolute;color: red;transform: scale(1.2,1.2);">not_interested</mat-icon>
+                    <span data-test-id="user-name" style="margin-left: 5px">{{user?.uid?.substring(0, 10)}}</span>
+                  </div>
+                }
+                @else{
+                  <span data-test-id="user-name">{{user?.displayName || user?.email}}</span>
+                }
+              </button>
+            </div>
+          }
           <mat-icon>{{(isOnline$ | async) ? 'cloud_queue' : 'cloud_off'}}</mat-icon>
         </mat-toolbar>
         <div class="content">

@@ -24,20 +24,23 @@ import {AddItemDialogComponent} from './add-item-dialog.component';
   template: `
     <div class="layout">
       <mat-list class="content">
-        <mat-list-item *ngFor="let item of items"  (click)="checkItem(item)" [ngClass]="{'finished': !!item.boughtAt}"
-                       style="cursor: pointer">
-          <div style="display: flex">
-            <mat-icon *ngIf="!item.boughtAt">done</mat-icon>
-            <mat-icon *ngIf="!!item.boughtAt">add_shopping_cart</mat-icon>
-            <span class="full-width"> {{item.description}}</span>
-            <span *ngIf="!!item.boughtAt" style="white-space: nowrap">{{item.boughtAt.toDate() |   amTimeAgo}}</span>
-            <mat-icon *ngIf="!!item.boughtAt">done</mat-icon>
-            <mat-icon *ngIf="!item.boughtAt" (click)="removeItem($event, item)" color="warn">delete</mat-icon>
+        @for(item of items; track item.id){
+          <mat-list-item  (click)="checkItem(item)" [ngClass]="{'finished': !!item.boughtAt}"
+                         style="cursor: pointer">
+            <div style="display: flex">
+              <mat-icon *ngIf="!item.boughtAt">done</mat-icon>
+              <mat-icon *ngIf="!!item.boughtAt">add_shopping_cart</mat-icon>
+              <span class="full-width"> {{item.description}}</span>
+              <span *ngIf="!!item.boughtAt" style="white-space: nowrap">{{item.boughtAt.toDate() |   amTimeAgo}}</span>
+              <mat-icon *ngIf="!!item.boughtAt">done</mat-icon>
+              <mat-icon *ngIf="!item.boughtAt" (click)="removeItem($event, item)" color="warn">delete</mat-icon>
+            </div>
+          </mat-list-item>
+        } @empty {
+          <div class="blank-slate">
+            Liste ist noch leer!
           </div>
-        </mat-list-item>
-        <div *ngIf="items.length == 0" class="blank-slate">
-          Liste ist noch leer!
-        </div>
+        }
       </mat-list>
 
       <div>
