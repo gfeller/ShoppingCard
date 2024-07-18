@@ -11,7 +11,6 @@ export interface Item extends DTO {
 }
 
 
-
 export interface ItemAddViewModel  {
   description: string;
   listId: string;

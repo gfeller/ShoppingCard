@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, inject, Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import {Item, ItemAddViewModel} from '../model/item';
@@ -10,12 +10,14 @@ import {Timestamp} from 'firebase/firestore';
 import {Auth} from '@angular/fire/auth';
 import {collectionChanges, DocumentChange, Firestore, where} from '@angular/fire/firestore';
 import {CoreState} from '../../core/state/core/reducer';
-import {ItemsActions, ListActions} from '../state';
 
 const momentConstructor = moment;
 
 @Injectable({providedIn: 'root'})
 export class ItemService extends BaseService<Item> {
+  onAdd = new EventEmitter<Item[]>()
+  onRemove = new EventEmitter<string[]>()
+
   constructor(store: Store<CoreState>, db: Firestore, public afAuth: Auth) {
     super('item', store, db);
   }
@@ -28,12 +30,10 @@ export class ItemService extends BaseService<Item> {
 
     const query2 = this.collectionQuery(where('listId', '==', id), where('boughtAt', '>', momentConstructor().subtract(1, 'days').toDate()));
     this.addSubscription(collectionChanges<Item>(query2).subscribe((items) => this.listChanged(id, items)));
-
-    return of(true);
   }
 
   override async add(item: ItemAddViewModel) {
-    const toAddItem: Item = {
+    const toAddItem: Omit<Item, "id"> = {
       ...item,
       boughtAt: null,
       createdAt: Timestamp.now(),
@@ -57,11 +57,10 @@ export class ItemService extends BaseService<Item> {
     }
     for (const action of toSend.filter(x => x.length > 0)) {
       if (action[0].type === 'added' || action[0].type === 'modified') {
-        this.store.dispatch(ListActions.loadListSuccess({
-          id, items: action.map((item) => <Item> {id: item.doc.id, ...item.doc.data()})
-        }));
+        this.onAdd.emit(action.map((item) => ({ ...item.doc.data(), id: item.doc.id})))
+
       } else if (action[0].type === 'removed') {
-        this.store.dispatch(ItemsActions.removeSuccess({ids: action.map((item) => item.doc.id)}));
+        this.onRemove.emit(action.map((item) => item.doc.id))
       }
     }
   }

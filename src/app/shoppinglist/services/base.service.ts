@@ -34,7 +34,7 @@ export abstract class BaseService<T extends DTO> {
   }
 
   get collection() {
-    return collection(this.db, this.collectionName) as CollectionReference<T>;
+    return collection(this.db, this.collectionName) as CollectionReference<Omit<T, "id">, T>;
   }
 
   collectionQuery(...queryConstraints: QueryConstraint[]) {
@@ -46,15 +46,15 @@ export abstract class BaseService<T extends DTO> {
     return doc(this.db, `${this.collectionName}/${id}`);
   }
 
-  async add(item: T) {
-    return from(addDoc(this.collection, item));
+  async add(item: Omit<T, "id">) {
+    return addDoc(this.collection, item);
   }
 
   update(item: T) {
-    return from(updateDoc(this.getDoc(item.id!), item as any));
+    return updateDoc(this.getDoc(item.id!), item as any);
   }
 
   remove(id: string) {
-    return from(deleteDoc(this.getDoc(id)));
+    return deleteDoc(this.getDoc(id));
   }
 }

@@ -8,7 +8,6 @@ import {EffectsModule} from '@ngrx/effects';
 import {ShoppingListEffects} from './state/lists/effects';
 import {ListComponent, ListPageComponent} from './components/list.component';
 import {reducers} from './state';
-import {ShoppingItemsEffects} from './state/items/effects';
 import {ShareComponent} from './components/share.component';
 
 
@@ -16,7 +15,7 @@ import {ShareComponent} from './components/share.component';
   imports: [
     SharedModule,
     StoreModule.forFeature('shopping', reducers),
-    EffectsModule.forFeature([ShoppingListEffects, ShoppingItemsEffects])
+    EffectsModule.forFeature([ShoppingListEffects])
   ],
   declarations: [ListPageComponent, ShoppingListComponent, ShoppingListPageComponent,
     AddItemDialogComponent, ListComponent, ShareComponent],

@@ -1,22 +1,32 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {List} from '../model/list';
 import {Item, ItemAddViewModel} from '../model/item';
-import {getSelectedItems} from '../state/items';
 import {getSelectedList} from '../state/lists';
 import {Timestamp} from 'firebase/firestore';
 import {NotificationData} from '../../core/state/core/actions';
-import {StoreDto} from '../../core/model/dto';
 import {ListState} from '../state/lists/reducer';
 import {selectNotificationForList, State} from '../../core/state';
-import {ItemsActions, ListActions} from '../state';
+import {ListActions} from '../state';
 import {ShareService} from '../../core/services/share.service';
 import {MatDialog} from '@angular/material/dialog';
 import {UiService} from '../../core/services/ui.service';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {AddItemDialogComponent} from './add-item-dialog.component';
+import {ItemsStore} from "../state/items/store";
+import {ListStore} from "../state/lists/store";
 
 
 @Component({
@@ -57,7 +67,7 @@ import {AddItemDialogComponent} from './add-item-dialog.component';
 
     <ng-template #templateForParent>
       <i class="material-icons" style="cursor: pointer" (click)="shareList()">share</i>
-      <i class="material-icons" style="cursor: pointer; margin-left: auto" (click)="showDialog($event, list.item!)">edit</i>
+      <i class="material-icons" style="cursor: pointer; margin-left: auto" (click)="showDialog($event, list)">edit</i>
     </ng-template>
   `,
   styles: `
@@ -117,14 +127,14 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   public addNewItemText: string;
 
   get ownerCount() {
-    return Object.keys(this.list.item!.owner).length;
+    return Object.keys(this.list.owner).length;
   }
 
   @Input()
   public notifications: NotificationData[];
 
   @Input()
-  public list: StoreDto<List>;
+  public list: List;
 
 
   get items(): Item[] {
@@ -146,6 +156,8 @@ export class ListComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+
+  private itemsStore = inject(ItemsStore)
 
   @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
 
@@ -169,29 +181,25 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   }
 
   public addItem(item?: ItemAddViewModel) {
-    this.store.dispatch(ItemsActions.add({
-      item: item ?
-        item : {description: this.addNewItemText, listId: this.list.id}
-    }));
+    this.itemsStore.add(item ? item : {description: this.addNewItemText, listId: this.list.id})
     this.addNewItemText = '';
   }
 
   public checkItem(item: Item) {
     if (item.boughtAt == null) {
-      this.store.dispatch(ItemsActions.update({item: {...item, boughtAt: Timestamp.now()}}));
+      this.itemsStore.update( {...item, boughtAt: Timestamp.now()})
     } else {
       this.addItem({description: item.description, listId: item.listId});
     }
   }
 
   public removeItem(event: Event, item: Item) {
-    this.store.dispatch(ItemsActions.remove({id: item.id!}));
+    this.itemsStore.remove( item.id)
     event.stopPropagation();
   }
 
 
   showDialog(event: Event, list: List) {
-
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       data: {description: list.description, isNew: false},
     });
@@ -213,20 +221,24 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-list-page',
   template: `
-    <app-list [list]="list$ | async | notNull" [items]="items$ | async | notNull" [notifications]="notifications$ | async | notNull"></app-list>
+    <app-list [list]="list$() | notNull" [items]="items$()" [notifications]="notifications$ | async | notNull"></app-list>
   `,
 })
 export class ListPageComponent implements OnInit {
-  public items$: Observable<Item[]> = new Observable<Item[]>();
-  public list$: Observable<StoreDto<List>> = new Observable<StoreDto<List>>();
+  public itemsStore =  inject(ItemsStore)
+  public listStore =  inject(ListStore)
+
+  public items$ = this.itemsStore.selectedItems;
+  public list$ = this.listStore.selectedList;
   public notifications$: Observable<NotificationData[]> = new Observable<NotificationData[]>();
+
+
 
   constructor(private coreStore: Store<State>, private store: Store<ListState>, private activatedRoute: ActivatedRoute) {
     this.activatedRoute.params.subscribe(params => {
       const id = params['id'];
-      store.dispatch(ListActions.selectList({id}));
-      this.list$ = this.store.select(getSelectedList);
-      this.items$ = this.store.select(getSelectedItems);
+
+      this.listStore.setSelectedListId(id)
       this.notifications$ = this.coreStore.select(selectNotificationForList(id));
     });
   }

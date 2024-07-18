@@ -16,6 +16,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-architects/ngrx-toolkit": "^18.0.0-rc.2.0",
     "@angular/animations": "^18.1.0",
     "@angular/cdk": "^18.0.3",
     "@angular/common": "^18.1.0",
@@ -30,6 +31,8 @@
     "@angular/service-worker": "^18.1.0",
     "@ngrx/effects": "^18.0.1",
     "@ngrx/entity": "^18.0.1",
+    "@ngrx/operators": "^18.0.0",
+    "@ngrx/signals": "^18.0.0-rc.2",
     "@ngrx/store": "^18.0.1",
     "@ngrx/store-devtools": "^18.0.1",
     "moment": "^2.29.4",
@@ -38,8 +41,7 @@
     "rxjs": "~7.8.0",
     "start-server-and-test": "^2.0.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.7",
-    "@ngrx/operators": "^18.0.0"
+    "zone.js": "~0.14.7"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.3",

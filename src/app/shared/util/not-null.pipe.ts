@@ -6,7 +6,7 @@ import {DomSanitizer, SafeHtml, SafeResourceUrl, SafeScript, SafeStyle, SafeUrl}
 })
 export class NotNullPipe implements PipeTransform {
 
-  public transform<T>(value: T | null): T {
+  public transform<T>(value: T | null | undefined): T {
     return value as T;
   }
 }

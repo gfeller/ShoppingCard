@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable, Injector} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import {List} from '../model/list';
@@ -13,10 +13,12 @@ import {CoreState} from '../../core/state/core/reducer';
 
 import {ListActions} from '../state';
 import {User} from 'firebase/auth';
+import {ListStore} from "../state/lists/store";
 
 
 @Injectable({providedIn: 'root'})
 export class ListService extends BaseService<List> {
+  injector = inject(Injector)
 
   constructor(store: Store<CoreState>, db: Firestore, public afAuth: Auth) {
     super('list', store, db);
@@ -60,6 +62,6 @@ export class ListService extends BaseService<List> {
   }
 
   listChanged(lists: List[]) {
-    this.store.dispatch(ListActions.readList({lists}));
+    this.injector.get(ListStore).setLists(lists)
   }
 }
