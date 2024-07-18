@@ -17,7 +17,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {SafePipe} from './util/safe.pipe';
 import {OnlyAnonymousDirective, OnlyUserDirective} from './security/security.guard';
-import {ConfirmButtonComponent} from './components/confirm-button/confirm-button.component';
+import {ConfirmButtonComponent} from './components/confirm-button.component';
 import {PortalModule} from '@angular/cdk/portal';
 import {MomentModule} from "ngx-moment";
 import {NotNullPipe} from "./util/not-null.pipe";

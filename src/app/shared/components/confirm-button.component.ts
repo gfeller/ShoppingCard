@@ -2,8 +2,13 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 
 @Component({
   selector: 'app-confirm-button',
-  templateUrl: './confirm-button.component.html',
-  styleUrls: ['./confirm-button.component.scss']
+  template: `
+    <button mat-raised-button *ngIf="!small" (click)="onDelete()" type="button"
+            color="warn">{{confirmed ? "Löschen bestätigen" : "Löschen"}}</button>
+    <button mat-icon-button *ngIf="small" (click)="onDelete()" type="button" color="warn">
+      <mat-icon>{{confirmed ? 'delete_forever' : 'delete'}}</mat-icon>
+    </button>
+  `
 })
 export class ConfirmButtonComponent implements OnInit {
 

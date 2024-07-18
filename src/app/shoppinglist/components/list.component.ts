@@ -2,27 +2,111 @@ import {AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChi
 import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {List} from '../../model/list';
-import {Item, ItemAddViewModel} from '../../model/item';
-import {getSelectedItems} from '../../state/items';
-import {getSelectedList} from '../../state/lists';
+import {List} from '../model/list';
+import {Item, ItemAddViewModel} from '../model/item';
+import {getSelectedItems} from '../state/items';
+import {getSelectedList} from '../state/lists';
 import {Timestamp} from 'firebase/firestore';
-import {NotificationData} from '../../../core/state/core/actions';
-import {StoreDto} from '../../../core/model/dto';
-import {ListState} from '../../state/lists/reducer';
-import {selectNotificationForList, State} from '../../../core/state';
-import {ItemsActions, ListActions} from '../../state';
-import {ShareService} from '../../../core/services/share.service';
+import {NotificationData} from '../../core/state/core/actions';
+import {StoreDto} from '../../core/model/dto';
+import {ListState} from '../state/lists/reducer';
+import {selectNotificationForList, State} from '../../core/state';
+import {ItemsActions, ListActions} from '../state';
+import {ShareService} from '../../core/services/share.service';
 import {MatDialog} from '@angular/material/dialog';
-import {UiService} from '../../../core/services/ui.service';
+import {UiService} from '../../core/services/ui.service';
 import {TemplatePortal} from '@angular/cdk/portal';
-import {AddItemDialogComponent} from '../add-item-dialog/add-item-dialog.component';
+import {AddItemDialogComponent} from './add-item-dialog.component';
 
 
 @Component({
   selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  template: `
+    <div class="layout">
+      <mat-list class="content">
+        <mat-list-item *ngFor="let item of items"  (click)="checkItem(item)" [ngClass]="{'finished': !!item.boughtAt}"
+                       style="cursor: pointer">
+          <div style="display: flex">
+            <mat-icon *ngIf="!item.boughtAt">done</mat-icon>
+            <mat-icon *ngIf="!!item.boughtAt">add_shopping_cart</mat-icon>
+            <span class="full-width"> {{item.description}}</span>
+            <span *ngIf="!!item.boughtAt" style="white-space: nowrap">{{item.boughtAt.toDate() |   amTimeAgo}}</span>
+            <mat-icon *ngIf="!!item.boughtAt">done</mat-icon>
+            <mat-icon *ngIf="!item.boughtAt" (click)="removeItem($event, item)" color="warn">delete</mat-icon>
+          </div>
+        </mat-list-item>
+        <div *ngIf="items.length == 0" class="blank-slate">
+          Liste ist noch leer!
+        </div>
+      </mat-list>
+
+      <div>
+        <form (submit)="addItem()" class="item-add-form">
+          <mat-form-field>
+            <input matInput placeholder="Wir brauchen" #newItem [(ngModel)]="addNewItemText" name="item-text">
+          </mat-form-field>
+          <button mat-icon-button color="primary" type="submit">
+            <mat-icon>add</mat-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <ng-template #templateForParent>
+      <i class="material-icons" style="cursor: pointer" (click)="shareList()">share</i>
+      <i class="material-icons" style="cursor: pointer; margin-left: auto" (click)="showDialog($event, list.item!)">edit</i>
+    </ng-template>
+  `,
+  styles: `
+    .mat-list-item {
+      display: flex;
+    }
+
+    .mat-list-item mat-icon {
+      margin-left: auto;
+      cursor: pointer;
+    }
+
+    .mat-list-item:nth-of-type(even) {
+      background: lightgray;
+    }
+
+    .finished {
+      opacity: 0.5;
+    }
+
+    .layout {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      height: 100%;
+
+      .content {
+        overflow: auto;
+        flex: 1 1 100%;
+      }
+    }
+
+    .item-add-form {
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+
+      :first-child {
+        flex: 1;
+      }
+    }
+
+
+    .blank-slate {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+  `
 })
 export class ListComponent implements AfterViewInit, OnDestroy {
   private _items: Item[];
