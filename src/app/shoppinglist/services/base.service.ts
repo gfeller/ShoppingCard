@@ -1,8 +1,5 @@
-import {Store} from '@ngrx/store';
-
-import {from, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {DTO} from '../../core/model/dto';
-import {CoreState} from '../../core/state/core/reducer';
 
 import {
   addDoc,
@@ -10,7 +7,6 @@ import {
   CollectionReference,
   deleteDoc,
   doc,
-  DocumentData,
   Firestore,
   query,
   QueryConstraint,
@@ -20,7 +16,7 @@ import {
 export abstract class BaseService<T extends DTO> {
   private subscription: Subscription[] = [];
 
-  protected constructor(protected collectionName: string, protected store: Store<CoreState>, protected db: Firestore) {
+  protected constructor(protected collectionName: string, protected db: Firestore) {
 
   }
 

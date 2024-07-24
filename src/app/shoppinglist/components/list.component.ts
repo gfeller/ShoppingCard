@@ -4,19 +4,14 @@ import {
   inject,
   Input,
   OnDestroy,
-  OnInit,
   TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
 import {List} from '../model/list';
 import {Item, ItemAddViewModel} from '../model/item';
 import {Timestamp} from 'firebase/firestore';
-import {NotificationData} from '../../core/state/core/actions';
-import {selectNotificationForList, State} from '../../core/state';
 import {ShareService} from '../../core/services/share.service';
 import {MatDialog} from '@angular/material/dialog';
 import {UiService} from '../../core/services/ui.service';
@@ -221,18 +216,18 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   `,
 })
 export class ListPageComponent {
-  public itemsStore =  inject(ItemsStore)
-  public listStore =  inject(ListStore)
+  public itemsStore = inject(ItemsStore)
+  public listStore = inject(ListStore)
 
   public items$ = this.itemsStore.selectedItems;
   public list$ = this.listStore.selectedList;
 
-  constructor(private coreStore: Store<State>, private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute) {
     this.activatedRoute.params.subscribe(params => {
       const id = params['id'];
 
       this.listStore.setSelectedListId(id)
     });
   }
-  }
+}
 

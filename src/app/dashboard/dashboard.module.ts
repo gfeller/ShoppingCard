@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {DashboardComponent} from './components/dashboard.component';
 import {RouterModule, Routes} from '@angular/router';
-import {UserComponent, UserPageComponent} from './components/user.component';
+import {UserComponent} from './components/user.component';
 import {ListPageComponent} from '../shoppinglist/components/list.component';
 import {ShareComponent} from '../shoppinglist/components/share.component';
 import {ShoppinglistModule} from '../shoppinglist/shoppinglist.module';
@@ -20,7 +20,7 @@ const routes: Routes = [
       {path: 'list/share/:id', component: ShareComponent}
     ]
   },
-  {path: 'user', component: UserPageComponent},
+  {path: 'user', component: UserComponent},
 ];
 
 @NgModule({
@@ -29,7 +29,7 @@ const routes: Routes = [
     ShoppinglistModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DashboardComponent, UserComponent, UserPageComponent]
+  declarations: [DashboardComponent, UserComponent]
 })
 export class DashboardModule {
 }

@@ -1,7 +1,5 @@
 import {ErrorHandler, Injectable, Injector} from '@angular/core';
-import {Store} from '@ngrx/store';
-
-import * as CoreActions from '../state/core/actions';
+import {AppStore} from "../state/core/app-store";
 
 
 @Injectable()
@@ -11,10 +9,9 @@ export class GlobalErrorHandler implements ErrorHandler {
 
   handleError(error: any) {
     if (error.rejection) {
-      this.injector.get(Store).dispatch(CoreActions.addError(error.rejection));
+      this.injector.get(AppStore).addMessage(error.rejection);
     } else {
       throw error;
     }
   }
 }
-

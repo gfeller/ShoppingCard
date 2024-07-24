@@ -1,19 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-
-import {Observable} from 'rxjs';
+import {Component, computed, effect} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthConnect, AuthUser} from '../../core/state/core/model';
-import {selectNotificationToken, selectUser, State} from '../../core/state';
-import * as CoreActions from '../../core/state/core/actions';
-import {MessagingService} from "../../core/services/messaging.service";
+import {AuthConnect} from '../../core/state/core/model';
+import {AppStore} from "../../core/state/core/app-store";
 
 
 @Component({
   selector: 'app-user',
   template: `
-    <ng-template [ngIf]="user">
+    <ng-template [ngIf]="user()">
       <div style="display: flex; align-items: center; justify-content: center">
         <div style="max-width: 700px">
           <mat-card *appOnlyUser>
@@ -24,7 +19,7 @@ import {MessagingService} from "../../core/services/messaging.service";
               <form id="profile-form" [formGroup]="changeUserData" novalidate (ngSubmit)="onChange()" autocomplete="off">
                 <mat-form-field>
                   <mat-label>E-Mail</mat-label>
-                  <input matInput [value]="user.email" disabled>
+                  <input matInput [value]="user().email" disabled>
                 </mat-form-field>
                 <mat-form-field>
                   <mat-label>Anzeigename</mat-label>
@@ -107,25 +102,25 @@ import {MessagingService} from "../../core/services/messaging.service";
               Push-Nachrichten
             </mat-card-header>
             <mat-card-content>
-              <ng-template [ngIf]="notificationToken">
+              <ng-template [ngIf]="">
                 <p>Push Nachrichten sind aktiviert.</p>
                 <p>
                   Sie erhalten Nachrichten falls neue Einträge hinzugefügt werden.
                 </p>
               </ng-template>
-              <ng-template [ngIf]="!notificationToken">
-                <p>Push Nachrichten sind deaktiviert. {{notificationToken}}</p>
+              <ng-template [ngIf]="!appStore.notificationAccess">
+                <p>Push Nachrichten sind deaktiviert.</p>
                 <p>
                   Sie können Push-Nachrichten aktivieren. Sie werden benachrichtet wenn neue Einträge erfasst werden.
                 </p>
               </ng-template>
             </mat-card-content>
             <mat-card-actions>
-              <ng-template [ngIf]="notificationToken">
+              <ng-template [ngIf]="appStore.notificationAccess">
                 <button mat-flat-button type="submit" (click)="onRemoveNotification()">Keine Benachrichtungen mehr erhalten.
                 </button>
               </ng-template>
-              <ng-template [ngIf]="!notificationToken">
+              <ng-template [ngIf]="!appStore.notificationAccess">
                 <button mat-flat-button type="submit" (click)="onAddNotification()">Benachrichtungen aktivieren.</button>
               </ng-template>
             </mat-card-actions>
@@ -145,28 +140,19 @@ import {MessagingService} from "../../core/services/messaging.service";
     }
   `
 })
-export class UserComponent implements OnInit {
-  private _user!: AuthUser;
+export class UserComponent {
   public connectUserData!: FormGroup;
   public pwdResetData!: FormGroup;
   public changeUserData!: FormGroup;
 
-  @Input()
-  public set user(value: AuthUser) {
-    this._user = value;
-    this.ngOnInit();
-  }
+  user = computed(() => this.appStore.user()!)
 
-  public get user() {
-    return this._user;
-  }
-
-
-  @Input()
-  public notificationToken: string | null;
-
-
-  constructor(private fb: FormBuilder, private store: Store<State>) {
+  constructor(private fb: FormBuilder, public appStore: AppStore) {
+    effect(() => {
+      if(appStore.user()){
+        this.setFormData()
+      }
+    });
 
   }
 
@@ -174,65 +160,46 @@ export class UserComponent implements OnInit {
     const data = this.changeUserData.getRawValue();
     data.pwd = this.changeUserData.controls["pwd"].dirty ? data.pwd : undefined;
     if (this.changeUserData.valid) {
-      this.store.dispatch(CoreActions.authUserSettingsChanged(data));
+      this.appStore.authUserSettingsChange(data)
     }
   }
 
   onSubmit(user: AuthConnect, isNew: boolean) {
     if (isNew) {
-      this.store.dispatch(CoreActions.authConnect(user));
+      this.appStore.connect(user)
     } else {
-      this.store.dispatch(CoreActions.authLogin(user));
+      this.appStore.login(user)
     }
   }
 
-  onReset() {
-    this.store.dispatch(CoreActions.authResetPwd({email: this.pwdResetData.value.email}));
-    this.ngOnInit();
+  async onReset() {
+    await this.appStore.resetPwdMail(this.pwdResetData.value.email)
+    this.setFormData();
   }
 
   onRemoveNotification() {
-    this.store.dispatch(CoreActions.removeNotificationGrant({token: this.notificationToken!}));
+    this.appStore.removePermission()
   }
 
   onAddNotification() {
-    this.store.dispatch(CoreActions.notificationGrantRequest());
+    this.appStore.requestPermission()
   }
 
-  ngOnInit() {
+  setFormData() {
     this.connectUserData = this.fb.group({
-      email: [this.user.email, [Validators.required, Validators.email]],
+      email: [this.user().email, [Validators.required, Validators.email]],
       pwd: ['', [Validators.required, Validators.minLength(6)]],
     });
 
     this.pwdResetData = this.fb.group({
-      email: [this.user.email, [Validators.required, Validators.email]]
+      email: [this.user().email, [Validators.required, Validators.email]]
     });
 
     this.changeUserData = this.fb.group({
-      email: [this.user.email, [Validators.required, Validators.email]],
+      email: [this.user().email, [Validators.required, Validators.email]],
       pwd: ['', [Validators.minLength(6)]],
       pwdOld: ['', [Validators.minLength(6)]],
-      displayName: [this.user.displayName],
+      displayName: [this.user().displayName],
     });
-  }
-}
-
-@Component({
-  selector: 'app-user-page',
-  template: `
-    <app-user *ngIf="user$ | async | notNull" [user]="user$ | async | notNull" [notificationToken]="notificationToken$ | async"></app-user>
-  `,
-})
-export class UserPageComponent implements OnInit {
-  public user$: Observable<AuthUser> = new Observable<AuthUser>();
-  public notificationToken$: Observable<string | null> = new Observable<string | null>();
-
-  constructor(private store: Store<State>) {
-    this.user$ = store.select(selectUser);
-    this.notificationToken$ = store.select(selectNotificationToken);
-  }
-
-  ngOnInit() {
   }
 }

@@ -1,5 +1,4 @@
-import {EventEmitter, inject, Injectable, Injector} from '@angular/core';
-import {Store} from '@ngrx/store';
+import {EventEmitter, Injectable} from '@angular/core';
 
 import {List} from '../model/list';
 import {BaseService} from './base.service';
@@ -8,14 +7,13 @@ import {map} from 'rxjs/operators';
 import {Auth} from '@angular/fire/auth';
 import {addDoc, doc, Firestore, fromRef, setDoc, where} from '@angular/fire/firestore';
 
-import {CoreState} from '../../core/state/core/reducer';
 
 @Injectable({providedIn: 'root'})
 export class ListService extends BaseService<List> {
   onChanged = new EventEmitter<List[]>()
 
-  constructor(store: Store<CoreState>, db: Firestore, public afAuth: Auth) {
-    super('list', store, db);
+  constructor(db: Firestore, public afAuth: Auth) {
+    super('list', db);
 
     afAuth.onAuthStateChanged((user) => {
       if (user !== null) {

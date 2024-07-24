@@ -1,4 +1,4 @@
-import {ErrorHandler, importProvidersFrom, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MessagingService} from './services/messaging.service';
 import {OnlineService} from './services/online.service';
@@ -14,21 +14,19 @@ import {
 } from '@angular/fire/auth';
 import {getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {
-  enableIndexedDbPersistence,
-  getFirestore,
+  connectFirestoreEmulator,
   initializeFirestore,
-  provideFirestore,
   persistentLocalCache,
-  connectFirestoreEmulator, enableMultiTabIndexedDbPersistence
+  provideFirestore
 } from '@angular/fire/firestore';
 import {environment} from '../../environments/environment';
 import {GlobalErrorHandler} from './services/global-error.handler';
-import {Store, StoreModule} from '@ngrx/store';
-import {metaReducers, reducers} from './state';
 import {UiService} from './services/ui.service';
-import {getMessaging, provideMessaging, getToken} from '@angular/fire/messaging';
+import {getMessaging, getToken, provideMessaging} from '@angular/fire/messaging';
 
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
+import {AppStore} from "./state/core/app-store";
+import {preLoadApp} from "./services/bootstrapper";
 
 console.log(environment.useEmulators);
 
@@ -36,15 +34,9 @@ console.log(environment.useEmulators);
   declarations: [],
   imports: [
     CommonModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers,
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
-      }
-    }),
   ],
   providers: [
+    preLoadApp,
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler
@@ -82,9 +74,5 @@ console.log(environment.useEmulators);
   ]
 })
 export class CoreModule {
-  constructor(uiService: UiService, onlineService: OnlineService, authService: AuthService, msgService: MessagingService, store: Store) /*Eager*/ {
-    msgService.init().then(x=>{
-       console.log("Messaging ready")
-    });
-  }
+
 }

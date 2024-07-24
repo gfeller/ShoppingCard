@@ -1,20 +1,16 @@
-import {Component} from '@angular/core';
-import {Observable} from 'rxjs';
-import {AuthUser} from './core/state/core/model';
-import {Store} from '@ngrx/store';
-import {selectIsMobile, selectIsOnline, selectIsReady, selectMessages, selectUser, State} from './core/state';
+import {Component, effect} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import * as CoreActions from './core/state/core/actions';
 import {UiService} from './core/services/ui.service';
+import {AppStore} from "./core/state/core/app-store";
 
 @Component({
   selector: 'app-root',
   template: `
-    <ng-template [ngIf]="!(ready$ | async)" [ngIfElse]="loaded">
+    <ng-template [ngIf]="!(appStore.ready)" [ngIfElse]="loaded">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </ng-template>
     <ng-template #loaded>
-      <div class="layout" [class.mobile]="isMobile$ | async">
+      <div class="layout" [class.mobile]="appStore.isMobile()">
         <mat-toolbar class="toolbar">
       <span>
         <button mat-icon-button [routerLink]="['/']" style="position: relative;display: flex;align-items: center;">
@@ -26,7 +22,7 @@ import {UiService} from './core/services/ui.service';
             <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
           </div>
           <span style="margin-left: auto"></span>
-          @if(user$ | async; as user){
+          @if(appStore.user(); as user){
             <div style="display: flex; align-items: center">
               <button data-test-id="user-settings" mat-button [routerLink]="['/user']">
                 @if(user.isAnonymous){
@@ -42,7 +38,7 @@ import {UiService} from './core/services/ui.service';
               </button>
             </div>
           }
-          <mat-icon>{{(isOnline$ | async) ? 'cloud_queue' : 'cloud_off'}}</mat-icon>
+          <mat-icon>{{(appStore.online()) ? 'cloud_queue' : 'cloud_off'}}</mat-icon>
         </mat-toolbar>
         <div class="content">
           <router-outlet></router-outlet>
@@ -82,27 +78,21 @@ import {UiService} from './core/services/ui.service';
 export class AppComponent {
   private openSnackbar = false;
 
-  isOnline$: Observable<boolean>;
-  isMobile$: Observable<boolean>;
-  ready$: Observable<boolean>;
-  user$: Observable<AuthUser | null | undefined>;
 
 
-  constructor(private store: Store<State>, public snackBar: MatSnackBar, public uiService : UiService) {
-    this.isOnline$ = store.select(selectIsOnline);
-    this.isMobile$ = store.select(selectIsMobile)
-    this.user$ = store.select(selectUser);
-    this.ready$ = store.select(selectIsReady);
+
+  constructor(public appStore: AppStore, public snackBar: MatSnackBar, public uiService : UiService) {
 
 
-    store.select(selectMessages).subscribe(messages => {
+    effect(() => {
+      const messages = appStore.messages();
       if (messages.length > 0 && !this.openSnackbar) {
         this.openSnackBar(messages[0], messages[0].message);
       }
     });
   }
 
-  openSnackBar(errorObj: any, message: string, action?: string) {
+  openSnackBar(errorObj: any, message: string, action?: string) { // TODO type
     this.openSnackbar = true;
     this.snackBar.open(message, action, {
       duration: 5000,
@@ -110,7 +100,7 @@ export class AppComponent {
       horizontalPosition: 'right',
     }).afterDismissed().subscribe(() => {
       this.openSnackbar = false;
-      this.store.dispatch(CoreActions.removeMessage({item : errorObj}));
+      this.appStore.removeMessage(errorObj.id)
     });
   }
 }

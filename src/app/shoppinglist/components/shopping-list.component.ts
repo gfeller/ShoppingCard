@@ -4,22 +4,19 @@ import {
   inject,
   Input,
   OnDestroy,
-  OnInit,
   TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 
-import {Store} from '@ngrx/store';
 import {List} from '../model/list';
-import {Observable} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {AddItemDialogComponent} from './add-item-dialog.component';
-import {NotificationData} from '../../core/state/core/actions';
-import {selectNotifications, State} from '../../core/state';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {UiService} from '../../core/services/ui.service';
 import {ListStore} from "../state/list-store";
+import {NotificationData} from "../../core/services/messaging.service";
+import {AppStore} from "../../core/state/core/app-store";
 
 
 @Component({
@@ -102,19 +99,12 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-shopping-list-page',
   template: `
-    <app-shopping-list [lists]="lists$()" [notifications]="notifications$ | async | notNull"></app-shopping-list>
+    <app-shopping-list [lists]="lists$()" [notifications]="appStore.notifications() "></app-shopping-list>
   `,
 })
-export class ShoppingListPageComponent implements OnInit {
+export class ShoppingListPageComponent {
   public listStore = inject(ListStore)
+  public appStore = inject(AppStore)
   public lists$ = this.listStore.entities
-  public notifications$!: Observable<NotificationData[]>;
-
-  constructor(private store: Store<State>) {
-    this.notifications$ = store.select(selectNotifications);
-  }
-  ngOnInit() {
-  }
-
 }
 

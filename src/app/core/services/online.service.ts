@@ -1,22 +1,21 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 
-import {Store} from '@ngrx/store';
+import {AppStore} from "../state/core/app-store";
 
-import {CoreState} from '../state/core/reducer';
-import * as CoreActions from '../state/core/actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OnlineService {
+  appStore = inject(AppStore)
 
-  constructor(private  state: Store<CoreState>) {
+  constructor() {
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
   }
 
 
   updateOnlineStatus() {
-    this.state.dispatch(CoreActions.netState({online: navigator.onLine}));
+    this.appStore.setNetState(navigator.onLine);
   }
 }

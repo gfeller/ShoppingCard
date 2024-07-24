@@ -1,25 +1,24 @@
-import { ApplicationConfig, isDevMode, provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+/*
+import {ApplicationConfig, provideExperimentalZonelessChangeDetection} from '@angular/core';
+import {provideRouter, withComponentInputBinding} from '@angular/router';
 import {getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {
   browserPopupRedirectResolver,
   connectAuthEmulator,
-  getAuth,
   indexedDBLocalPersistence,
   initializeAuth,
   provideAuth
 } from '@angular/fire/auth';
 import {
   connectFirestoreEmulator,
-  getFirestore,
   initializeFirestore,
   persistentLocalCache,
   provideFirestore
 } from '@angular/fire/firestore';
-import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
-import { environment } from '../environments/environment';
+import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
+import {provideAnimations} from '@angular/platform-browser/animations';
+import {provideHttpClient} from '@angular/common/http';
+import {environment} from '../environments/environment';
 import {getMessaging, getToken, provideMessaging} from "@angular/fire/messaging";
 
 
@@ -63,3 +62,4 @@ export const appConfig: ApplicationConfig = {
     }),
   ],
 };
+*/

@@ -1,15 +1,12 @@
-import {EventEmitter, inject, Injectable} from '@angular/core';
-import {Store} from '@ngrx/store';
+import {EventEmitter, Injectable} from '@angular/core';
 
 import {Item, ItemAddViewModel} from '../model/item';
 
 import moment from 'moment';
 import {BaseService} from './base.service';
-import {of} from 'rxjs';
 import {Timestamp} from 'firebase/firestore';
 import {Auth} from '@angular/fire/auth';
 import {collectionChanges, DocumentChange, Firestore, where} from '@angular/fire/firestore';
-import {CoreState} from '../../core/state/core/reducer';
 
 const momentConstructor = moment;
 
@@ -18,8 +15,8 @@ export class ItemService extends BaseService<Item> {
   onAdd = new EventEmitter<Item[]>()
   onRemove = new EventEmitter<string[]>()
 
-  constructor(store: Store<CoreState>, db: Firestore, public afAuth: Auth) {
-    super('item', store, db);
+  constructor( db: Firestore, public afAuth: Auth) {
+    super('item',  db);
   }
 
   getFromList(id: string) {

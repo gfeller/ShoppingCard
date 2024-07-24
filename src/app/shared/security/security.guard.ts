@@ -1,24 +1,16 @@
-import {ChangeDetectorRef, Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {selectUser, State} from '../../core/state';
-import {Subscription} from 'rxjs';
+import {ChangeDetectorRef, Directive, effect, TemplateRef, ViewContainerRef} from '@angular/core';
 import {AuthUser} from '../../core/state/core/model';
+import {AppStore} from "../../core/state/core/app-store";
 
 
 @Directive()
-abstract class OnlyBaseDirective implements OnDestroy, OnInit {
-  private subscription!: Subscription;
+abstract class OnlyBaseDirective {
   private state = false;
 
-  constructor(private store: Store<State>, private _viewContainer: ViewContainerRef, private _template: TemplateRef<object>, private ref: ChangeDetectorRef) {
-  }
+  constructor(private appStore: AppStore, private _viewContainer: ViewContainerRef, private _template: TemplateRef<object>, private ref: ChangeDetectorRef) {
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  ngOnInit(): void {
-    this.subscription = this.store.select(selectUser).subscribe(user => {
+    effect(() => {
+      const user = this.appStore.user()
       const newState = user ? this.show(user) : false;
 
       if (newState !== this.state) {
@@ -31,7 +23,7 @@ abstract class OnlyBaseDirective implements OnDestroy, OnInit {
         }
         this.ref.markForCheck();
       }
-    });
+    })
   }
 
   protected abstract show(user: AuthUser): boolean;

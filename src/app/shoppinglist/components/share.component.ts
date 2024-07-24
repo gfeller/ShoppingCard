@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ListStore} from "../state/list-store";
-
 
 
 @Component({

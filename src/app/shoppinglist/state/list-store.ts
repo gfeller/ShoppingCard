@@ -1,6 +1,6 @@
 import {patchState, signalStore, withState,} from "@ngrx/signals";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
-import {addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {setAllEntities, withEntities} from "@ngrx/signals/entities";
 
 import {computed, inject, Injectable} from "@angular/core";
 import {List} from "../model/list";

@@ -1,16 +1,11 @@
 import {patchState, signalStore} from "@ngrx/signals";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
-import {
-  withEntities,
-  addEntities,
-  removeEntities
-} from "@ngrx/signals/entities";
+import {addEntities, removeEntities, withEntities} from "@ngrx/signals/entities";
 import {Item, ItemAddViewModel} from "../model/item";
 import {computed, effect, inject, Injectable} from "@angular/core";
 
 import {ListStore} from "./list-store";
 import {ItemService} from "../services/item.service";
-
 
 
 @Injectable({providedIn: "root"})

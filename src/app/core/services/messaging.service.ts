@@ -1,18 +1,26 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {deleteToken, getMessaging, getToken, isSupported, Messaging, onMessage} from 'firebase/messaging';
 import 'firebase/messaging';
 
 import {Auth, authState} from '@angular/fire/auth';
-import {collection, deleteDoc, doc, Firestore, getDoc, setDoc} from '@angular/fire/firestore';
+import {collection, deleteDoc, doc, Firestore, setDoc} from '@angular/fire/firestore';
 
-import {Store} from '@ngrx/store';
-import {defer, from, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 
-import {CoreState} from '../state/core/reducer';
-import * as CoreActions from '../state/core/actions';
-import {NotificationData} from "../state/core/actions";
 import {environment} from '../../../environments/environment';
+
+
+export interface NotificationData {
+  data: { type: string, targetId: string, containerId: string };
+  notification: { title: string, body: string, icon?: string };
+  collapseKey: string;
+  from: string;
+}
+
+export interface RemoveNotification {
+  targetId?: string;
+  containerId?: string;
+}
 
 
 @Injectable({
@@ -21,7 +29,10 @@ import {environment} from '../../../environments/environment';
 export class MessagingService {
   private messaging: Messaging | undefined;
 
-  constructor(private db: Firestore, private afAuth: Auth, private store: Store<CoreState>) {
+  onMessage = new EventEmitter<NotificationData>()
+
+
+  constructor(private db: Firestore, private afAuth: Auth) {
 
   }
 
@@ -29,15 +40,48 @@ export class MessagingService {
     if(await isSupported()) {
       this.messaging = getMessaging();
 
-      await this.getTokenAndSendToServer();
+      await this.#getTokenAndSendToServer();
 
-      this.receiveMessage()
+      this.#receiveMessage()
+      return false;
     }
-
-    this.store.dispatch(CoreActions.initSuccessMessaging())
+    return false;
   }
 
-  updateToken(token: string) {
+
+  requestPermission = async () : Promise<{permission: boolean, message?: string}> => {
+    return Notification.requestPermission()
+      .then((value: string) => {
+        if (value === "default" || value === "denied") {
+          return Promise.reject(value);
+        }
+        return getToken(this.messaging!);
+      })
+      .then((token) => {
+        this.#updateToken(token);
+      })
+      .catch(x => undefined)
+      .then(() => {
+        if (Notification.permission === "denied") {
+          return {
+            permission: false,
+            "message": "Benachrichtigen wurden permanent im Browser deaktiviert. Aktivieren Sie diese manuell."
+          }
+        } else if (Notification.permission === "default") {
+          return {permission: false}
+        }
+        return {permission: false, "message": "Danke für Ihre Zustimmung."}
+      })
+  };
+
+
+  async removePermission() {
+    await deleteToken(this.messaging!);
+    return await this.#removeToken();
+  }
+
+
+  #updateToken(token: string) {
     authState(this.afAuth).pipe(take(1)).subscribe(user => {
       if (!user) {
         return;
@@ -47,54 +91,23 @@ export class MessagingService {
   }
 
 
-  async removeToken() {
+  async #removeToken() {
     const user = await this.afAuth.currentUser!;
     await deleteDoc(doc(collection(this.db, 'fcmTokens'), user.uid));
   }
 
-  async getTokenAndSendToServer() {
+  async #getTokenAndSendToServer() {
     const token = await getToken(this.messaging!, {vapidKey: environment.vapidKey})
     if(token) {
-      this.updateToken(token);
-      this.store.dispatch(CoreActions.notificationGrantSuccess({token}));
+      this.#updateToken(token);
     }
   }
 
-  requestPermission() {
 
-    return from(Notification.requestPermission()
-      .then((value) => {
-        if (value === 'default') {
-          return Promise.reject(value);
-        }
-        if (value === 'denied') {
-          this.store.dispatch(CoreActions.message({message: 'Benachrichtigen wurden permanent im Browser deaktiviert. Aktivieren Sie diese manuell.'}));
-          return Promise.reject(value);
-        }
-        return getToken(this.messaging!);
-      })
-      .then(token => {
-        return this.getTokenAndSendToServer()
-      }).then(() => {
-        this.store.dispatch(CoreActions.message({message: 'Danke für Ihre Zustimmung'}));
-      })
-      .catch((err) => {
-        this.store.dispatch(CoreActions.notificationGrantForbidden());
-      }));
-  }
-
-  removePermission(): Observable<void> {
-    return defer(async () => {
-      await deleteToken(this.messaging!);
-      return await this.removeToken();
-    });
-  }
-
-
-  receiveMessage() {
+  #receiveMessage() {
     if (this.messaging != null) {
       onMessage(this.messaging, (payload: unknown) => {
-        this.store.dispatch(CoreActions.notificationSuccess(payload as NotificationData));
+        this.onMessage.emit(payload as NotificationData);
       });
     }
   }

@@ -1,23 +1,20 @@
 import {Injectable} from '@angular/core';
 
-import {Store} from '@ngrx/store';
-import {uiInformationChanged} from '../state/core/actions';
-import {State} from '../state';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {BehaviorSubject} from 'rxjs';
+import {AppStore} from "../state/core/app-store";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiService {
-
   public subMenu: BehaviorSubject<TemplatePortal | null> = new BehaviorSubject<TemplatePortal | null>(null);
   public headerMenu: BehaviorSubject<TemplatePortal | null > = new BehaviorSubject<TemplatePortal | null>(null);
 
-  constructor(coreStore: Store<State>, private deviceService: DeviceDetectorService) {
-    coreStore.dispatch(uiInformationChanged({info: {isMobile: deviceService.isMobile()}}));
+  constructor(coreStore: AppStore, private deviceService: DeviceDetectorService) {
+    coreStore.setUiState(deviceService.isMobile())
   }
 
   public setSubMenu(portal: TemplatePortal | null) {
