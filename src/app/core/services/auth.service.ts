@@ -9,13 +9,15 @@ import {
   signInAnonymously,
   signInWithEmailAndPassword,
   updatePassword,
-  updateProfile
+  updateProfile, user
 } from '@angular/fire/auth';
 
 
 import {EmailAuthProvider} from 'firebase/auth';
 
 import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../state/core/model';
+import {from, lastValueFrom, switchMap} from "rxjs";
+import {take} from "rxjs/operators";
 
 
 @Injectable({
@@ -28,7 +30,7 @@ export class AuthService {
 
   }
 
-  init(){
+  async init(){
     this.afAuth.onAuthStateChanged((user) => {
       if (user === null) {
         signInAnonymously(this.afAuth);
@@ -36,7 +38,9 @@ export class AuthService {
         this.onChange.emit(new AuthUser(user))
       }
     });
+    await lastValueFrom(user(this.afAuth).pipe(take(1)));
   }
+
 
   async connectUser(data: AuthConnect){
     const user = await this.afAuth.currentUser!;

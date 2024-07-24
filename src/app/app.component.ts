@@ -2,6 +2,8 @@ import {Component, effect} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UiService} from './core/services/ui.service';
 import {AppStore} from "./core/state/core/app-store";
+import {ListStore} from "./shoppinglist/state/list-store";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -51,9 +53,9 @@ import {AppStore} from "./core/state/core/app-store";
     .layout {
       display: grid;
       grid-template-areas:
-    "toolbar"
-    "content"
-    "subMenu";
+        "toolbar"
+        "content"
+        "subMenu";
 
       grid-template-rows: auto 1fr auto;
       height: 100vh;
@@ -78,12 +80,7 @@ import {AppStore} from "./core/state/core/app-store";
 export class AppComponent {
   private openSnackbar = false;
 
-
-
-
-  constructor(public appStore: AppStore, public snackBar: MatSnackBar, public uiService : UiService) {
-
-
+  constructor(public appStore: AppStore,  public listStore: ListStore, public snackBar: MatSnackBar, public uiService : UiService, public router: Router) {
     effect(() => {
       const messages = appStore.messages();
       if (messages.length > 0 && !this.openSnackbar) {

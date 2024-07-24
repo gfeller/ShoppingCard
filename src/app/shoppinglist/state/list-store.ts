@@ -32,9 +32,6 @@ export class ListStore extends signalStore(  { providedIn: 'root' },
 
   #setLists(lists: List[]) {
     patchState(this, setAllEntities(lists));
-    if(this.selectedListId() === undefined) {
-      patchState(this, {selectedListId: lists[0]?.id});
-    }
   }
 
   add(desc:string) {

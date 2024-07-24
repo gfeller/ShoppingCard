@@ -47,7 +47,7 @@ export class AppStore extends signalStore(  { providedIn: 'root' },
 
   async init(){
     await this.messagingService.init()
-    this.authService.init()
+    await this.authService.init()
   }
 
   setNetState(online: boolean){

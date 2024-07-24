@@ -153,7 +153,7 @@ export class UserComponent {
         this.setFormData()
       }
     });
-
+    this.setFormData();
   }
 
   onChange() {

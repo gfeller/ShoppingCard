@@ -16,7 +16,6 @@ exports.fcmSend = functions.firestore.document('item/{itemId}')
     const data = snapshot.data();
     const targetId = context.params.itemId;
     const containerId = data.listId;
-    const createdBy = data.createdBy;
     const payload = {
       notification: {
         title: 'Neuer Eintrag: ' + data.description,
@@ -74,7 +73,7 @@ exports.fcmSend = functions.firestore.document('item/{itemId}')
         logger.log(message, doc.token);
 
         return admin.messaging().send({...message, token: doc.token});
-        return admin.messaging().sendToDevice(doc.token, payload);
+        //return admin.messaging().sendToDevice(doc.token, payload);
       });
     }).catch(err => console.log(err));
   });
