@@ -1,8 +1,8 @@
 import {Component, computed, effect} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthConnect} from '../../core/state/core/model';
-import {AppStore} from "../../core/state/core/app-store";
+import {AuthConnect} from '../../core/state/model';
+import {AppStore} from "../../core/state/app-store";
 
 
 @Component({
@@ -108,7 +108,7 @@ import {AppStore} from "../../core/state/core/app-store";
                   Sie erhalten Nachrichten falls neue Einträge hinzugefügt werden.
                 </p>
               </ng-template>
-              <ng-template [ngIf]="!appStore.notificationAccess">
+              <ng-template [ngIf]="!appStore.notificationAccess()">
                 <p>Push Nachrichten sind deaktiviert.</p>
                 <p>
                   Sie können Push-Nachrichten aktivieren. Sie werden benachrichtet wenn neue Einträge erfasst werden.
@@ -116,11 +116,11 @@ import {AppStore} from "../../core/state/core/app-store";
               </ng-template>
             </mat-card-content>
             <mat-card-actions>
-              <ng-template [ngIf]="appStore.notificationAccess">
+              <ng-template [ngIf]="appStore.notificationAccess()">
                 <button mat-flat-button type="submit" (click)="onRemoveNotification()">Keine Benachrichtungen mehr erhalten.
                 </button>
               </ng-template>
-              <ng-template [ngIf]="!appStore.notificationAccess">
+              <ng-template [ngIf]="!appStore.notificationAccess()">
                 <button mat-flat-button type="submit" (click)="onAddNotification()">Benachrichtungen aktivieren.</button>
               </ng-template>
             </mat-card-actions>

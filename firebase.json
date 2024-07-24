@@ -11,7 +11,7 @@
     "source": "functions"
   },
   "hosting": {
-    "public": "dist/shopping-card",
+    "public": "dist/shopping-card/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

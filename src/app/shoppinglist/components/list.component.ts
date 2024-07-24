@@ -1,10 +1,10 @@
 import {
   AfterViewInit,
-  Component,
-  inject,
+  Component, computed, effect,
+  inject, input,
   Input,
-  OnDestroy,
-  TemplateRef,
+  OnDestroy, signal,
+  TemplateRef, untracked,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -212,22 +212,26 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-list-page',
   template: `
-    <app-list [list]="list$() | notNull" [items]="items$()"></app-list>
+    <app-list [list]="list() | notNull" [items]="items()"></app-list>
   `,
 })
 export class ListPageComponent {
   public itemsStore = inject(ItemsStore)
   public listStore = inject(ListStore)
 
-  public items$ = this.itemsStore.selectedItems;
-  public list$ = this.listStore.selectedList;
+  public test = signal(10)
+
+  public items = this.itemsStore.selectedItems;
+  public list = this.listStore.selectedList;
+
+  public id = input.required<string>()
+
+
 
   constructor(private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.params.subscribe(params => {
-      const id = params['id'];
-
-      this.listStore.setSelectedListId(id)
+    effect(() => {
+      const id  =this.id();
+      untracked(() => this.listStore.setSelectedListId(id))
     });
   }
 }
-

@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {BehaviorSubject} from 'rxjs';
-import {AppStore} from "../state/core/app-store";
+import {AppStore} from "../state/app-store";
 
 
 @Injectable({

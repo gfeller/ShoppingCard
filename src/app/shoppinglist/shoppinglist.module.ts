@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {ShoppingListComponent, ShoppingListPageComponent} from './components/shopping-list.component';
+import {ShoppingListComponent, ShoppingListEntryComponent} from './components/shopping-list.component';
 import {ListService} from './services/list.service';
 import {SharedModule} from '../shared/shared.module';
 import {AddItemDialogComponent} from './components/add-item-dialog.component';
@@ -12,9 +12,8 @@ import {ShareComponent} from './components/share.component';
   imports: [
     SharedModule,
   ],
-  declarations: [ListPageComponent, ShoppingListComponent, ShoppingListPageComponent,
-    AddItemDialogComponent, ListComponent, ShareComponent],
-  exports: [ShoppingListPageComponent, ListPageComponent, ShareComponent],
+  declarations: [ListPageComponent, ShoppingListComponent, AddItemDialogComponent, ListComponent, ShareComponent, ShoppingListEntryComponent],
+  exports: [ListPageComponent, ShareComponent, ShoppingListComponent],
 })
 export class ShoppinglistModule {
   constructor(private listService: ListService) { // Eager

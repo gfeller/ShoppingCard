@@ -1,7 +1,7 @@
 import {Component, effect} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UiService} from './core/services/ui.service';
-import {AppStore} from "./core/state/core/app-store";
+import {AppStore} from "./core/state/app-store";
 import {ListStore} from "./shoppinglist/state/list-store";
 import {Router} from "@angular/router";
 

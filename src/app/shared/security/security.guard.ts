@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Directive, effect, TemplateRef, ViewContainerRef} from '@angular/core';
-import {AuthUser} from '../../core/state/core/model';
-import {AppStore} from "../../core/state/core/app-store";
+import {AuthUser} from '../../core/state/model';
+import {AppStore} from "../../core/state/app-store";
 
 
 @Directive()

@@ -29,6 +29,7 @@ export class ItemsStore extends signalStore(  { providedIn: 'root' },
       }
     })
   }
+
   selectedItems = computed(() => {
     const selectedListId = this.listStore.selectedListId();
     if (selectedListId != undefined) {
@@ -36,7 +37,6 @@ export class ItemsStore extends signalStore(  { providedIn: 'root' },
     }
     return [];
   });
-
 
   #loadList(items: Item[]){
     patchState(this, addEntities(items))

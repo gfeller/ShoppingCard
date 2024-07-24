@@ -40,12 +40,15 @@ export class MessagingService {
     if(await isSupported()) {
       this.messaging = getMessaging();
 
-      await this.#getTokenAndSendToServer();
-
-      this.#receiveMessage()
-      return false;
+      try {
+        await this.#getTokenAndSendToServer();
+        this.#receiveMessage()
+      }
+      catch {
+        console.warn("no-permission")
+      }
     }
-    return false;
+    return Notification.permission === "granted";
   }
 
 
@@ -70,7 +73,7 @@ export class MessagingService {
         } else if (Notification.permission === "default") {
           return {permission: false}
         }
-        return {permission: false, "message": "Danke für Ihre Zustimmung."}
+        return {permission: true, "message": "Danke für Ihre Zustimmung."}
       })
   };
 
@@ -97,9 +100,11 @@ export class MessagingService {
   }
 
   async #getTokenAndSendToServer() {
-    const token = await getToken(this.messaging!, {vapidKey: environment.vapidKey})
-    if(token) {
-      this.#updateToken(token);
+    if(Notification.permission === "granted") {
+      const token = await getToken(this.messaging!, {vapidKey: environment.vapidKey,})
+      if (token) {
+        this.#updateToken(token);
+      }
     }
   }
 

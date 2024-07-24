@@ -25,7 +25,7 @@ import {UiService} from './services/ui.service';
 import {getMessaging, getToken, provideMessaging} from '@angular/fire/messaging';
 
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
-import {AppStore} from "./state/core/app-store";
+import {AppStore} from "./state/app-store";
 import {preLoadApp} from "./services/bootstrapper";
 
 console.log(environment.useEmulators);

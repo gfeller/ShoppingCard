@@ -3,8 +3,8 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 
 import {inject, Injectable} from "@angular/core";
 import {AuthConnect, AuthUser, AuthUserSettingsChange} from "./model";
-import {MessagingService, NotificationData} from "../../services/messaging.service";
-import {AuthService} from "../../services/auth.service";
+import {MessagingService, NotificationData, RemoveNotification} from "../services/messaging.service";
+import {AuthService} from "../services/auth.service";
 
 export interface AppState {
   online: boolean;
@@ -46,7 +46,7 @@ export class AppStore extends signalStore(  { providedIn: 'root' },
   }
 
   async init(){
-    await this.messagingService.init()
+    patchState(this, { notificationAccess: await this.messagingService.init()});
     await this.authService.init()
   }
 
@@ -64,8 +64,8 @@ export class AppStore extends signalStore(  { providedIn: 'root' },
     patchState(this, {notifications: [...this.notifications(), data]});
   }
 
-  removeNotification(data: NotificationData) {
-    patchState(this, {notifications: this.notifications().filter(n => n.data.containerId !== data.data.containerId && n.data.targetId !== data.data.targetId)});
+  removeNotification(data: RemoveNotification) {
+    patchState(this, {notifications: this.notifications().filter(n => n.data.containerId !== data.containerId && n.data.targetId !== data.targetId)});
   }
 
   addMessage(message: string){

@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 
-import {AppStore} from "../state/core/app-store";
+import {AppStore} from "../state/app-store";
 
 
 @Injectable({

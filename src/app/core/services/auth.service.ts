@@ -15,7 +15,7 @@ import {
 
 import {EmailAuthProvider} from 'firebase/auth';
 
-import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../state/core/model';
+import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../state/model';
 import {from, lastValueFrom, switchMap} from "rxjs";
 import {take} from "rxjs/operators";
 

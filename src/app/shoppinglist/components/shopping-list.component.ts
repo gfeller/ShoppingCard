@@ -1,10 +1,10 @@
 import {
   AfterViewInit,
-  Component,
-  inject,
+  Component, computed,
+  inject, input,
   Input,
   OnDestroy,
-  TemplateRef,
+  TemplateRef, viewChild,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -15,8 +15,34 @@ import {AddItemDialogComponent} from './add-item-dialog.component';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {UiService} from '../../core/services/ui.service';
 import {ListStore} from "../state/list-store";
-import {NotificationData} from "../../core/services/messaging.service";
-import {AppStore} from "../../core/state/core/app-store";
+import {AppStore} from "../../core/state/app-store";
+
+
+
+@Component({
+  selector: 'app-shopping-list-entry',
+  template: `
+    <a mat-tab-link
+       [routerLink]="['/list/'+list().id]"
+       routerLinkActive
+       #rla="routerLinkActive"
+       [active]="rla.isActive">
+
+            <span [matBadgeHidden]="!notifications().length"
+                  [matBadge]="notifications().length" style="overflow: visible"
+                  matBadgeOverlap="false">{{ list().description }}</span>
+    </a>`
+})
+export class ShoppingListEntryComponent{
+  public appStore = inject(AppStore)
+
+  public list = input.required<List>()
+
+  notifications = computed(() => {
+    return this.appStore.notifications().filter(x => x.data.containerId === this.list().id);
+  });
+}
+
 
 
 @Component({
@@ -27,17 +53,8 @@ import {AppStore} from "../../core/state/core/app-store";
     <ng-template #templateForParent>
       <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
       <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-        @for (list of lists; track list.id) {
-          <a mat-tab-link
-             [routerLink]="['/list/'+list.id]"
-             routerLinkActive
-             #rla="routerLinkActive"
-             [active]="rla.isActive">
-
-            <span [matBadgeHidden]="!getNotificationForList(list.id).length"
-                  [matBadge]="getNotificationForList(list.id).length" style="overflow: visible"
-                  matBadgeOverlap="false">{{ list.description }}</span>
-          </a>
+        @for (list of listStore.entities(); track list.id) {
+          <app-shopping-list-entry [list]="list" style="flex: 1"/>
         }
         <a mat-tab-link>
           <div (click)="showDialog($event)" style="top: 0;bottom: 0;position: absolute;right: 0;left:0">
@@ -50,20 +67,18 @@ import {AppStore} from "../../core/state/core/app-store";
 })
 export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 
-  @Input()
-  public lists: List[];
-
-  @Input()
-  public notifications: NotificationData[];
-
-  @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
-
-
   public listStore = inject(ListStore)
+  public appStore = inject(AppStore)
+
+  @ViewChild('templateForParent', {static: true})
+  templateForParent: TemplateRef<any>;
 
   constructor(public dialog: MatDialog, private viewContainerRef: ViewContainerRef, private uiService: UiService) {
+    setInterval(() => {
+      this.appStore.addNotification({data: {containerId: this.listStore.entities()[0]?.id}}  as any)
+      this.appStore.addNotification({data: {containerId: this.listStore.entities()[2]?.id}}  as any)
+    }, 10000)
   }
-
 
   ngAfterViewInit(): void {
     const templatePortal = new TemplatePortal(this.templateForParent, this.viewContainerRef);
@@ -74,10 +89,6 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.uiService.setSubMenu(null);
-  }
-
-  getNotificationForList(id: string) {
-    return this.notifications.filter(x => x.data.containerId === id);
   }
 
   showDialog(event: Event) {
@@ -95,16 +106,4 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
    }
 }
 
-
-@Component({
-  selector: 'app-shopping-list-page',
-  template: `
-    <app-shopping-list [lists]="lists$()" [notifications]="appStore.notifications() "></app-shopping-list>
-  `,
-})
-export class ShoppingListPageComponent {
-  public listStore = inject(ListStore)
-  public appStore = inject(AppStore)
-  public lists$ = this.listStore.entities
-}
 

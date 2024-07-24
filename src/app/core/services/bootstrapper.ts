@@ -3,9 +3,7 @@ import {UiService} from "./ui.service";
 import {OnlineService} from "./online.service";
 import {AuthService} from "./auth.service";
 import {MessagingService} from "./messaging.service";
-import {AppStore} from "../state/core/app-store";
-import {ListStore} from "../../shoppinglist/state/list-store";
-import {ItemsStore} from "../../shoppinglist/state/items-store";
+import {AppStore} from "../state/app-store";
 
 export function preloadUser(uiService: UiService, onlineService: OnlineService, authService: AuthService, msgService: MessagingService, appStore: AppStore) {
   return async function() {
