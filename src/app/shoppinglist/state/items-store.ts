@@ -3,17 +3,13 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {
   withEntities,
   addEntities,
-  updateEntities,
-  setAllEntities,
-  updateEntity,
-  updateAllEntities,
-  removeEntities, addEntity
+  removeEntities
 } from "@ngrx/signals/entities";
-import {Item, ItemAddViewModel} from "../../model/item";
+import {Item, ItemAddViewModel} from "../model/item";
 import {computed, effect, inject, Injectable} from "@angular/core";
 
-import {ListStore} from "../lists/store";
-import {ItemService} from "../../services/item.service";
+import {ListStore} from "./list-store";
+import {ItemService} from "../services/item.service";
 
 
 
@@ -38,8 +34,6 @@ export class ItemsStore extends signalStore(  { providedIn: 'root' },
       }
     })
   }
-
-
   selectedItems = computed(() => {
     const selectedListId = this.listStore.selectedListId();
     if (selectedListId != undefined) {

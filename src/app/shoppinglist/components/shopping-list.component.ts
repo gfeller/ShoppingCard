@@ -11,18 +11,15 @@ import {
 } from '@angular/core';
 
 import {Store} from '@ngrx/store';
-import {getLists} from '../state/lists';
 import {List} from '../model/list';
 import {Observable} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {AddItemDialogComponent} from './add-item-dialog.component';
 import {NotificationData} from '../../core/state/core/actions';
-import {ListState} from '../state/lists/reducer';
 import {selectNotifications, State} from '../../core/state';
-import {ListActions} from '../state';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {UiService} from '../../core/services/ui.service';
-import {ListStore} from "../state/lists/store";
+import {ListStore} from "../state/list-store";
 
 
 @Component({
@@ -65,7 +62,9 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
   @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
 
 
-  constructor(private store: Store<ListState>, public dialog: MatDialog, private viewContainerRef: ViewContainerRef, private uiService: UiService) {
+  public listStore = inject(ListStore)
+
+  constructor(public dialog: MatDialog, private viewContainerRef: ViewContainerRef, private uiService: UiService) {
   }
 
 
@@ -91,14 +90,12 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(ListActions.add(result.data));
+        this.listStore.add(result.data.description);
       }
     });
     event.preventDefault();
     event.stopPropagation();
-  }
-
-
+   }
 }
 
 

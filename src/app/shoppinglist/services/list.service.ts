@@ -1,9 +1,8 @@
-import {inject, Injectable, Injector} from '@angular/core';
+import {EventEmitter, inject, Injectable, Injector} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import {List} from '../model/list';
 import {BaseService} from './base.service';
-import {defer} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {Auth} from '@angular/fire/auth';
@@ -11,14 +10,9 @@ import {addDoc, doc, Firestore, fromRef, setDoc, where} from '@angular/fire/fire
 
 import {CoreState} from '../../core/state/core/reducer';
 
-import {ListActions} from '../state';
-import {User} from 'firebase/auth';
-import {ListStore} from "../state/lists/store";
-
-
 @Injectable({providedIn: 'root'})
 export class ListService extends BaseService<List> {
-  injector = inject(Injector)
+  onChanged = new EventEmitter<List[]>()
 
   constructor(store: Store<CoreState>, db: Firestore, public afAuth: Auth) {
     super('list', store, db);
@@ -39,29 +33,22 @@ export class ListService extends BaseService<List> {
     });
   }
 
-  addList(description: string) {
-    return defer(async () => {
-      const currentUser = await this.afAuth.currentUser!;
-      return addDoc(this.collection, {description, owner: {[currentUser.uid]: true}});
-    });
+  async addList(description: string) {
+    const currentUser = this.afAuth.currentUser!;
+    return addDoc(this.collection, {description, owner: {[currentUser.uid]: true}});
   }
 
-  addShareList(listId: string) {
-
-    return defer(async () => {
-      const currentUser = await this.afAuth.currentUser!;
-      return setDoc(doc(this.db, `list/${listId}`), {owner: {[currentUser.uid]: true}}, {merge: true});
-    });
+  async addShareList(listId: string) {
+    const currentUser = this.afAuth.currentUser!;
+    return setDoc(doc(this.db, `list/${listId}`), {owner: {[currentUser.uid]: true}}, {merge: true});
   }
 
-  removeShareList(listId: string) {
-    return defer(async () => {
-      const currentUser = await this.afAuth.currentUser!;
-      return setDoc(doc(this.db, `list/${listId}`), {owner: {[currentUser.uid]: false}}, {merge: true});
-    });
+  async  removeShareList(listId: string) {
+    const currentUser = this.afAuth.currentUser!;
+    return setDoc(doc(this.db, `list/${listId}`), {owner: {[currentUser.uid]: false}}, {merge: true});
   }
 
   listChanged(lists: List[]) {
-    this.injector.get(ListStore).setLists(lists)
+    this.onChanged.emit(lists)
   }
 }

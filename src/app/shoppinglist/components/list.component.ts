@@ -14,19 +14,16 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {List} from '../model/list';
 import {Item, ItemAddViewModel} from '../model/item';
-import {getSelectedList} from '../state/lists';
 import {Timestamp} from 'firebase/firestore';
 import {NotificationData} from '../../core/state/core/actions';
-import {ListState} from '../state/lists/reducer';
 import {selectNotificationForList, State} from '../../core/state';
-import {ListActions} from '../state';
 import {ShareService} from '../../core/services/share.service';
 import {MatDialog} from '@angular/material/dialog';
 import {UiService} from '../../core/services/ui.service';
 import {TemplatePortal} from '@angular/cdk/portal';
 import {AddItemDialogComponent} from './add-item-dialog.component';
-import {ItemsStore} from "../state/items/store";
-import {ListStore} from "../state/lists/store";
+import {ItemsStore} from "../state/items-store";
+import {ListStore} from "../state/list-store";
 
 
 @Component({
@@ -130,8 +127,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     return Object.keys(this.list.owner).length;
   }
 
-  @Input()
-  public notifications: NotificationData[];
 
   @Input()
   public list: List;
@@ -158,10 +153,11 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   }
 
   private itemsStore = inject(ItemsStore)
+  private listStore = inject(ListStore)
 
   @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
 
-  constructor(private store: Store<ListState>, private shareService: ShareService, private viewContainerRef: ViewContainerRef, private uiService: UiService, public dialog: MatDialog,) {
+  constructor(private shareService: ShareService, private viewContainerRef: ViewContainerRef, private uiService: UiService, public dialog: MatDialog) {
   }
 
   ngAfterViewInit(): void {
@@ -207,9 +203,9 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (result.delete) {
-          this.store.dispatch(ListActions.removeShareList({id: list.id!}));
+          this.listStore.removeSharedList( list.id!);
         } else if (result.data) {
-          this.store.dispatch(ListActions.update({item: {...list, description: result.data.description}}));
+          this.listStore.update({...list, description: result.data.description});
         }
       }
     });
@@ -221,29 +217,22 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 @Component({
   selector: 'app-list-page',
   template: `
-    <app-list [list]="list$() | notNull" [items]="items$()" [notifications]="notifications$ | async | notNull"></app-list>
+    <app-list [list]="list$() | notNull" [items]="items$()"></app-list>
   `,
 })
-export class ListPageComponent implements OnInit {
+export class ListPageComponent {
   public itemsStore =  inject(ItemsStore)
   public listStore =  inject(ListStore)
 
   public items$ = this.itemsStore.selectedItems;
   public list$ = this.listStore.selectedList;
-  public notifications$: Observable<NotificationData[]> = new Observable<NotificationData[]>();
 
-
-
-  constructor(private coreStore: Store<State>, private store: Store<ListState>, private activatedRoute: ActivatedRoute) {
+  constructor(private coreStore: Store<State>, private activatedRoute: ActivatedRoute) {
     this.activatedRoute.params.subscribe(params => {
       const id = params['id'];
 
       this.listStore.setSelectedListId(id)
-      this.notifications$ = this.coreStore.select(selectNotificationForList(id));
     });
   }
-
-  ngOnInit() {
   }
-}
 
