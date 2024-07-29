@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ListStore} from "../state/list-store";
 
@@ -26,21 +26,14 @@ import {ListStore} from "../state/list-store";
     </mat-card>
   `
 })
-export class ShareComponent implements OnInit {
-  public shareId: string;
+export class ShareComponent  {
+  public id = input.required<string>();
 
-  constructor(private store: ListStore, private activatedRoute: ActivatedRoute, private router: Router) {
-    this.activatedRoute.params.subscribe(params => {
-      this.shareId = params['id'];
-    });
-  }
+  private store = inject(ListStore);
+  private router = inject(Router);
 
   async addShare() {
-    await this.store.addSharedList(this.shareId);
-    await this.router.navigateByUrl('/list/' + this.shareId);
+    await this.store.addSharedList(this.id());
+    await this.router.navigateByUrl('/list/' + this.id());
   }
-
-  ngOnInit() {
-  }
-
 }

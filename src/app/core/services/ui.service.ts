@@ -22,6 +22,9 @@ export class UiService {
   }
 
   public setHeaderMenu(portal: TemplatePortal | null) {
-    this.headerMenu.next(portal);
+    setTimeout(() => {
+      this.headerMenu.next(portal);
+    });
+
   }
 }

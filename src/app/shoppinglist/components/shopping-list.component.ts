@@ -68,19 +68,16 @@ export class ShoppingListEntryComponent{
 export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 
   public listStore = inject(ListStore)
-  
+  public dialog = inject(MatDialog);
+  private viewContainerRef = inject(ViewContainerRef);
+  private uiService = inject(UiService);
+
   @ViewChild('templateForParent', {static: true})
-  templateForParent: TemplateRef<any>;
+  templateForParent: TemplateRef<Element>;
 
-  constructor(public dialog: MatDialog, private viewContainerRef: ViewContainerRef, private uiService: UiService) {
-
-  }
 
   ngAfterViewInit(): void {
-    const templatePortal = new TemplatePortal(this.templateForParent, this.viewContainerRef);
-    setTimeout(() => {
-      this.uiService.setSubMenu(templatePortal);
-    }, 1);
+    this.uiService.setSubMenu(new TemplatePortal(this.templateForParent, this.viewContainerRef));
   }
 
   ngOnDestroy(): void {
@@ -101,5 +98,3 @@ export class ShoppingListComponent implements AfterViewInit, OnDestroy {
     event.stopPropagation();
    }
 }
-
-
