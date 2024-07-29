@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Directive, effect, TemplateRef, ViewContainerRef} from '@angular/core';
-import {AuthUser} from '../../core/state/model';
+import {AuthUser} from '../../core/model/auth';
 import {AppStore} from "../../core/state/app-store";
 
 
@@ -8,7 +8,6 @@ abstract class OnlyBaseDirective {
   private state = false;
 
   constructor(private appStore: AppStore, private _viewContainer: ViewContainerRef, private _template: TemplateRef<object>, private ref: ChangeDetectorRef) {
-
     effect(() => {
       const user = this.appStore.user()
       const newState = user ? this.show(user) : false;

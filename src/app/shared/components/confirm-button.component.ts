@@ -1,39 +1,36 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, input, output, signal} from '@angular/core';
 
 @Component({
   selector: 'app-confirm-button',
   template: `
-    @if (small) {
+    @if (small()) {
       <button mat-icon-button (click)="onDelete()" type="button" color="warn">
-        <mat-icon>{{ confirmed ? 'delete_forever' : 'delete' }}</mat-icon>
+        <mat-icon>{{ confirmed() ? 'delete_forever' : 'delete' }}</mat-icon>
       </button>
     } @else {
       <button mat-raised-button (click)="onDelete()" type="button"
-              color="warn">{{ confirmed ? "Löschen bestätigen" : "Löschen" }}
+              color="warn">{{ confirmed() ? "Löschen bestätigen" : "Löschen" }}
       </button>
-    }  `
+    }`
 })
-export class ConfirmButtonComponent implements OnInit {
+export class ConfirmButtonComponent  {
 
-  @Output() delete = new EventEmitter<string>();
-  @Input() small = false;
+  delete = output<void>();
+  small = input<boolean>(false);
 
-  confirmed = false;
+  confirmed = signal(false);
 
   constructor(private ref: ChangeDetectorRef) {
   }
 
-  ngOnInit(): void {
-  }
-
   onDelete() {
-    if (this.confirmed) {
+    if (this.confirmed()) {
       this.delete.emit();
     } else {
-      this.confirmed = true;
+      this.confirmed.set(true);
 
       setTimeout(() => {
-        this.confirmed = false;
+        this.confirmed.set(false);
       }, 1500);
     }
   }

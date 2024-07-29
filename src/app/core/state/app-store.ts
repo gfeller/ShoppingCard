@@ -2,7 +2,7 @@ import {patchState, signalStore, withState} from "@ngrx/signals";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 
 import {inject, Injectable} from "@angular/core";
-import {AuthConnect, AuthUser, AuthUserSettingsChange} from "./model";
+import {AuthConnect, AuthUser, AuthUserSettingsChange} from "../model/auth";
 import {MessagingService, NotificationData, RemoveNotification} from "../services/messaging.service";
 import {AuthService} from "../services/auth.service";
 

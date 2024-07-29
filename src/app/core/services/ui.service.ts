@@ -1,8 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TemplatePortal} from '@angular/cdk/portal';
-import {BehaviorSubject} from 'rxjs';
 import {AppStore} from "../state/app-store";
 
 
@@ -10,21 +9,22 @@ import {AppStore} from "../state/app-store";
   providedIn: 'root'
 })
 export class UiService {
-  public subMenu: BehaviorSubject<TemplatePortal | null> = new BehaviorSubject<TemplatePortal | null>(null);
-  public headerMenu: BehaviorSubject<TemplatePortal | null > = new BehaviorSubject<TemplatePortal | null>(null);
+  public subMenu =  signal<TemplatePortal | null>(null)
+  public headerMenu =  signal<TemplatePortal | null>(null)
 
   constructor(coreStore: AppStore, private deviceService: DeviceDetectorService) {
     coreStore.setUiState(deviceService.isMobile())
   }
 
   public setSubMenu(portal: TemplatePortal | null) {
-    this.subMenu.next(portal);
+    setTimeout(() => {
+      this.subMenu.set(portal);
+    }, 1);
   }
 
   public setHeaderMenu(portal: TemplatePortal | null) {
     setTimeout(() => {
-      this.headerMenu.next(portal);
-    });
-
+      this.headerMenu.set(portal);
+    }, 1);
   }
 }

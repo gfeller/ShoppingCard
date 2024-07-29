@@ -1,5 +1,5 @@
-import {Component, inject, input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, inject, input} from '@angular/core';
+import {Router} from '@angular/router';
 import {ListStore} from "../state/list-store";
 
 

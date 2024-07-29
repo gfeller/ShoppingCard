@@ -1,22 +1,12 @@
-import {
-  AfterViewInit,
-  Component, computed,
-  inject, input,
-  Input,
-  OnDestroy,
-  TemplateRef, viewChild,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import {Component, computed, effect, inject, input, TemplateRef, viewChild} from '@angular/core';
 
 import {List} from '../model/list';
 import {MatDialog} from '@angular/material/dialog';
 import {AddItemDialogComponent} from './add-item-dialog.component';
-import {TemplatePortal} from '@angular/cdk/portal';
-import {UiService} from '../../core/services/ui.service';
 import {ListStore} from "../state/list-store";
 import {AppStore} from "../../core/state/app-store";
-
+import {useMenu} from "../../shared/hooks/use-menu.hook";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -35,7 +25,6 @@ import {AppStore} from "../../core/state/app-store";
 })
 export class ShoppingListEntryComponent{
   public appStore = inject(AppStore)
-
   public list = input.required<List>()
 
   notifications = computed(() => {
@@ -65,23 +54,13 @@ export class ShoppingListEntryComponent{
     </ng-template>
   `
 })
-export class ShoppingListComponent implements AfterViewInit, OnDestroy {
-
+export class ShoppingListComponent  {
   public listStore = inject(ListStore)
   public dialog = inject(MatDialog);
-  private viewContainerRef = inject(ViewContainerRef);
-  private uiService = inject(UiService);
+  public template = viewChild<TemplateRef<Element>>('templateForParent');
 
-  @ViewChild('templateForParent', {static: true})
-  templateForParent: TemplateRef<Element>;
-
-
-  ngAfterViewInit(): void {
-    this.uiService.setSubMenu(new TemplatePortal(this.templateForParent, this.viewContainerRef));
-  }
-
-  ngOnDestroy(): void {
-    this.uiService.setSubMenu(null);
+  constructor() {
+    useMenu("sub", this.template);
   }
 
   showDialog(event: Event) {

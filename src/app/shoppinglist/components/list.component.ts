@@ -1,23 +1,14 @@
-import {
-  AfterViewInit,
-  Component, computed, effect,
-  inject, input,
-  OnDestroy,
-  TemplateRef, untracked,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import {Component, computed, effect, inject, input, TemplateRef, untracked, viewChild} from '@angular/core';
 
 import {List} from '../model/list';
 import {Item, ItemAddViewModel} from '../model/item';
 import {Timestamp} from 'firebase/firestore';
 import {ShareService} from '../../core/services/share.service';
 import {MatDialog} from '@angular/material/dialog';
-import {UiService} from '../../core/services/ui.service';
-import {TemplatePortal} from '@angular/cdk/portal';
 import {AddItemDialogComponent} from './add-item-dialog.component';
 import {ItemsStore} from "../state/items-store";
 import {ListStore} from "../state/list-store";
+import {useMenu} from "../../shared/hooks/use-menu.hook";
 
 
 @Component({
@@ -112,20 +103,15 @@ import {ListStore} from "../state/list-store";
     }
   `
 })
-export class ListComponent implements AfterViewInit, OnDestroy {
+export class ListComponent {
   private shareService = inject(ShareService);
-  private viewContainerRef = inject(ViewContainerRef);
-  private uiService = inject(UiService);
   public dialog = inject(MatDialog);
   public itemsStore = inject(ItemsStore)
   public listStore = inject(ListStore)
 
-
-  @ViewChild('templateForParent', {static: true}) templateForParent: TemplateRef<any>;
   public id = input.required<string>()
-
   public list = computed(() => this.listStore.selectedList()!);
-
+  public template = viewChild<TemplateRef<Element>>('templateForParent');
 
   public addNewItemText: string;
 
@@ -145,22 +131,17 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   })
 
 
+
+
   constructor() {
     effect(() => {
       const id  =this.id();
       untracked(() => this.listStore.setSelectedListId(id))
     });
+
+    useMenu("header", this.template);
   }
 
-
-  ngAfterViewInit(): void {
-    this.uiService.setHeaderMenu(new TemplatePortal(this.templateForParent, this.viewContainerRef));
-  }
-
-
-  ngOnDestroy(): void {
-    this.uiService.setHeaderMenu(null);
-  }
 
   public shareList() {
     this.shareService.share('Einladung', `https://ikaufzetteli.firebaseapp.com/list/share/${this.list()!.id}`);
@@ -203,3 +184,5 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     event.stopPropagation();
   }
 }
+
+

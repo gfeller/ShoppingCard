@@ -1,8 +1,8 @@
 import {Component, computed, effect} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AuthConnect} from '../../core/state/model';
-import {AppStore} from "../../core/state/app-store";
+import {AuthConnect} from '../model/auth';
+import {AppStore} from "../state/app-store";
 
 
 @Component({

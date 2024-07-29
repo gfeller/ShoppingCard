@@ -9,14 +9,15 @@ import {
   signInAnonymously,
   signInWithEmailAndPassword,
   updatePassword,
-  updateProfile, user
+  updateProfile,
+  user
 } from '@angular/fire/auth';
 
 
 import {EmailAuthProvider} from 'firebase/auth';
 
-import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../state/model';
-import {from, lastValueFrom, switchMap} from "rxjs";
+import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../model/auth';
+import {lastValueFrom} from "rxjs";
 import {take} from "rxjs/operators";
 
 

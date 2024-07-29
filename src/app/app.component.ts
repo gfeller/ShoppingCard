@@ -21,7 +21,7 @@ import {Router} from "@angular/router";
       </span>
           <span style="margin-left: auto"></span>
           <div>
-            <ng-container [cdkPortalOutlet]="uiService.headerMenu | async"></ng-container>
+            <ng-container [cdkPortalOutlet]="uiService.headerMenu()"></ng-container>
           </div>
           <span style="margin-left: auto"></span>
           @if(appStore.user(); as user){
@@ -45,7 +45,7 @@ import {Router} from "@angular/router";
         <div class="content">
           <router-outlet></router-outlet>
         </div>
-        <ng-container [cdkPortalOutlet]="uiService.subMenu | async"></ng-container>
+        <ng-container [cdkPortalOutlet]="uiService.subMenu()"></ng-container>
       </div>
     </ng-template>
   `,

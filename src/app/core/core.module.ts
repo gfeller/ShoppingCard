@@ -1,8 +1,5 @@
 import {ErrorHandler, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MessagingService} from './services/messaging.service';
-import {OnlineService} from './services/online.service';
-import {AuthService} from './services/auth.service';
 
 
 import {
@@ -21,19 +18,23 @@ import {
 } from '@angular/fire/firestore';
 import {environment} from '../../environments/environment';
 import {GlobalErrorHandler} from './services/global-error.handler';
-import {UiService} from './services/ui.service';
-import {getMessaging, getToken, provideMessaging} from '@angular/fire/messaging';
+import {getMessaging, provideMessaging} from '@angular/fire/messaging';
 
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
-import {AppStore} from "./state/app-store";
 import {preLoadApp} from "./services/bootstrapper";
+import {UserComponent} from "./components/user.component";
+import {MaterialModule} from "../shared/material.module";
+import {ReactiveFormsModule} from "@angular/forms";
 
 console.log(environment.useEmulators);
 
 @NgModule({
-  declarations: [],
+  declarations: [ UserComponent],
+  exports: [UserComponent],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
+    MaterialModule,
   ],
   providers: [
     preLoadApp,
@@ -43,9 +44,7 @@ console.log(environment.useEmulators);
     },
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideMessaging(() => {
-      const messsage = getMessaging();
-      getToken(messsage, {vapidKey: "BDVuY72ImQjzouaS9SpWPaORCPqOl72AszG8dtFCVmhFrQscoGwOqVDe50AMIak9hbMIhXpHrJceD_5ANB0oVRc"})
-      return messsage;
+      return getMessaging();
     }),
     provideFirestore(() => {
       const fireStore =  initializeFirestore(getApp(), {localCache: persistentLocalCache({})});;
