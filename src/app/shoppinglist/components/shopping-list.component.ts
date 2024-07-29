@@ -68,16 +68,12 @@ export class ShoppingListEntryComponent{
 export class ShoppingListComponent implements AfterViewInit, OnDestroy {
 
   public listStore = inject(ListStore)
-  public appStore = inject(AppStore)
-
+  
   @ViewChild('templateForParent', {static: true})
   templateForParent: TemplateRef<any>;
 
   constructor(public dialog: MatDialog, private viewContainerRef: ViewContainerRef, private uiService: UiService) {
-    setInterval(() => {
-      this.appStore.addNotification({data: {containerId: this.listStore.entities()[0]?.id}}  as any)
-      this.appStore.addNotification({data: {containerId: this.listStore.entities()[2]?.id}}  as any)
-    }, 10000)
+
   }
 
   ngAfterViewInit(): void {

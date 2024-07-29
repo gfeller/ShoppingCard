@@ -1,79 +1,79 @@
-import {EventContext, logger} from 'firebase-functions';
-import {messaging} from 'firebase-admin';
-import Message = messaging.Message;
+import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { logger } from 'firebase-functions';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getMessaging } from 'firebase-admin/messaging';
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
 
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+// Initialize the Firebase app
+initializeApp({
+  credential: applicationDefault(),
+});
 
+// Define the Firestore trigger function
+exports.fcmSend = onDocumentCreated('item/{itemId}', async (event) => {
+  const data = event.data.data();
+  const targetId = event.params.itemId;
+  const containerId = data.listId;
+  const payload = {
+    notification: {
+      title: 'Neuer Eintrag: ' + data.description,
+      body: '',
+      click_action: 'https://ikaufzetteli.firebaseapp.com/list/' + data.listId,
+      icon: '/favicon.ico',
+      tag: data.listId,
+    },
+    data: {
+      type: 'item',
+      targetId: targetId,
+      containerId: containerId,
+    },
+  };
 
-admin.initializeApp(
-  { credential: admin.credential.applicationDefault()}
-);
-
-
-exports.fcmSend = functions.firestore.document('item/{itemId}')
-  .onCreate((snapshot: any, context: EventContext) => {
-    const data = snapshot.data();
-    const targetId = context.params.itemId;
-    const containerId = data.listId;
-    const payload = {
+  const message = {
+    token: '',
+    data: {
+      type: 'item',
+      targetId: targetId,
+      containerId: containerId,
+    },
+    notification: {
+      title: 'Neuer Eintrag: ' + data.description,
+      body: '',
+    },
+    webpush: {
       notification: {
-        title: 'Neuer Eintrag: ' + data.description,
-        body: '',
-        click_action: 'https://ikaufzetteli.firebaseapp.com/list/' + data.listId,
-        icon: '/favicon.ico',
         tag: data.listId,
-        // 'sound': 'default' //<-- wenn man sowas möchte :)
+        icon: '/favicon.ico',
+        vibrate: 3,
       },
-      data: {
-        type: 'item',
-        targetId: targetId,
-        containerId: containerId
-      }
-    };
-
-    const message : Message = {
-      token: '',
-      data: {
-        type: 'item',
-        targetId: targetId,
-        containerId: containerId
+      fcmOptions: {
+        link: 'https://ikaufzetteli.firebaseapp.com/list/' + data.listId,
       },
-      notification:{
-        title: 'Neuer Eintrag: ' + data.description,
-        body: ''
-      },
-      webpush: {
-        notification:{
-          tag: data.listId,
-          icon: '/favicon.ico',
-          vibrate: 3,
-        },
-        fcmOptions: {
-          link: 'https://ikaufzetteli.firebaseapp.com/list/' + data.listId,
-        }
-      }
-    }
+    },
+  };
 
-    logger.warn(message);
+  logger.warn(message);
 
-    return admin.firestore().collection('list').doc(data.listId).get().then(list => {
-      const listData = list.data();
+  try {
+    const listDoc = await getFirestore().collection('list').doc(data.listId).get();
+    const listData = listDoc.data();
+
+    if (listData) {
       payload.notification.body = `in der Liste ${listData.description}`;
-      return Object.keys(listData.owner)//.filter(x => x !== createdBy).filter(x => listData.owner[x]);
-    }).then(owners => {
-      if(owners.length === 0){
-        return [];
-      }
-      return admin.firestore().getAll(...owners.map(owner => admin.firestore().doc('fcmTokens/' + owner)));
-    }).then(docs => {
-      return docs.map(x => x.data());
-    }).then(docs => {
-      docs.filter(doc => doc !== undefined).forEach(doc => {
-        logger.log(message, doc.token);
+      const ownerRefs = Object.keys(listData.owner).map(owner => getFirestore().doc('fcmTokens/' + owner));
+      const ownerDocs = await getFirestore().getAll(...ownerRefs);
 
-        return admin.messaging().send({...message, token: doc.token});
-        //return admin.messaging().sendToDevice(doc.token, payload);
-      });
-    }).catch(err => console.log(err));
-  });
+      ownerDocs
+        .map(doc => doc.data())
+        .filter(doc => doc !== undefined)
+        .forEach(doc => {
+          if (doc && doc.token) {
+            logger.log(message, doc.token);
+            getMessaging().send({ ...message, token: doc.token });
+          }
+        });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
