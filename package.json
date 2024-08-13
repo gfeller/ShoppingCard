@@ -34,7 +34,7 @@
     "ngx-device-detector": "^8.0.0",
     "ngx-moment": "^6.0.2",
     "rxjs": "~7.8.0",
-    "start-server-and-test": "^2.0.0",
+    "start-server-and-test": "^2.0.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.7"
   },

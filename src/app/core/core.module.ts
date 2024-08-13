@@ -25,16 +25,21 @@ import {preLoadApp} from "./services/bootstrapper";
 import {UserComponent} from "./components/user.component";
 import {MaterialModule} from "../shared/material.module";
 import {ReactiveFormsModule} from "@angular/forms";
+import {HeaderComponent} from './components/header.component';
+import {RouterModule} from '@angular/router';
+import {PortalModule} from '@angular/cdk/portal';
 
 console.log(environment.useEmulators);
 
 @NgModule({
-  declarations: [ UserComponent],
-  exports: [UserComponent],
+  declarations: [ UserComponent, HeaderComponent],
+  exports: [UserComponent, HeaderComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     MaterialModule,
+    RouterModule,
+    PortalModule
   ],
   providers: [
     preLoadApp,

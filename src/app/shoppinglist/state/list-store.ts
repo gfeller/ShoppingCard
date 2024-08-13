@@ -13,7 +13,7 @@ interface ListStoreState{
 export class ListStore extends signalStore(  { providedIn: 'root' },
   withDevtools('list'),
   withState<ListStoreState>({selectedListId: undefined}),
-  withEntities<List>()){
+  withEntities<List>()) {
 
   listService = inject(ListService)
 

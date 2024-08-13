@@ -6,7 +6,6 @@ import {AddItemDialogComponent} from './add-item-dialog.component';
 import {ListStore} from "../state/list-store";
 import {AppStore} from "../../core/state/app-store";
 import {useMenu} from "../../shared/hooks/use-menu.hook";
-import {Router} from "@angular/router";
 
 
 @Component({
@@ -46,8 +45,7 @@ export class ShoppingListEntryComponent{
           <app-shopping-list-entry [list]="list" style="flex: 1"/>
         }
         <a mat-tab-link>
-          <div (click)="showDialog($event)" style="top: 0;bottom: 0;position: absolute;right: 0;left:0">
-          </div>
+          <div (click)="showDialog($event)" style="top: 0;bottom: 0;position: absolute;right: 0;left:0"></div>
           <mat-icon><i class="material-icons">add_circle_outline</i></mat-icon>
         </a>
       </nav>

@@ -8,6 +8,7 @@ import {SharedModule} from "./shared/shared.module";
 import {CoreModule} from "./core/core.module";
 import {ShoppinglistModule} from "./shoppinglist/shoppinglist.module";
 import {ServiceWorkerModule} from '@angular/service-worker';
+import {HeaderComponent} from './core/components/header.component';
 
 @NgModule({
   declarations: [

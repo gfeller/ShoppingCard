@@ -48,6 +48,7 @@ export class AppStore extends signalStore(  { providedIn: 'root' },
   async init(){
     patchState(this, { notificationAccess: await this.messagingService.init()});
     await this.authService.init()
+    patchState(this, { ready: true});
   }
 
   setNetState(online: boolean){
@@ -57,8 +58,6 @@ export class AppStore extends signalStore(  { providedIn: 'root' },
   setUiState(isMobile: boolean){
     patchState(this, {isMobile:isMobile});
   }
-
-
 
   addNotification(data: NotificationData){
     patchState(this, {notifications: [...this.notifications(), data]});
