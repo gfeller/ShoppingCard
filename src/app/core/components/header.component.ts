@@ -1,4 +1,4 @@
-import {Component, effect, input} from '@angular/core';
+import {Component, effect, inject, input} from '@angular/core';
 import {AuthUser} from '../model/auth';
 import {AppStore} from '../state/app-store';
 import {ListStore} from '../../shoppinglist/state/list-store';
@@ -42,26 +42,6 @@ import {Router} from '@angular/router';
 })
 export class HeaderComponent {
   user = input.required<AuthUser>();
-  private openSnackbar = false;
-
-  constructor(public appStore: AppStore, public listStore: ListStore, public snackBar: MatSnackBar, public uiService: UiService, public router: Router) {
-    effect(() => {
-      const messages = appStore.messages();
-      if (messages.length > 0 && !this.openSnackbar) {
-        this.openSnackBar(messages[0], messages[0].message);
-      }
-    });
-  }
-
-  openSnackBar(errorObj: any, message: string, action?: string) { // TODO type
-    this.openSnackbar = true;
-    this.snackBar.open(message, action, {
-      duration: 5000,
-      verticalPosition: 'bottom',
-      horizontalPosition: 'right',
-    }).afterDismissed().subscribe(() => {
-      this.openSnackbar = false;
-      this.appStore.removeMessage(errorObj.id);
-    });
-  }
+  appStore = inject(AppStore)
+  uiService = inject(UiService)
 }

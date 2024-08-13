@@ -1,4 +1,4 @@
-import {Component, computed, effect} from '@angular/core';
+import {Component, computed, effect, inject} from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthConnect} from '../model/auth';
@@ -147,9 +147,12 @@ export class UserComponent {
 
   user = computed(() => this.appStore.user()!)
 
-  constructor(private fb: FormBuilder, public appStore: AppStore) {
+  appStore = inject(AppStore)
+  fb = inject(FormBuilder)
+
+  constructor() {
     effect(() => {
-      if(appStore.user()){
+      if(this.appStore.user()){
         this.setFormData()
       }
     });

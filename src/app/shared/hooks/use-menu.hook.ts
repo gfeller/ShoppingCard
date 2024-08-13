@@ -10,7 +10,6 @@ export function useMenu(menu: "sub" | "header", template: Signal<TemplateRef<Ele
   const setter = menu === "header" ? uiService.setHeaderMenu.bind(uiService) : uiService.setSubMenu.bind(uiService)
 
   effect((onCleanup) => {
-    //debugger;
     const portalTemplate = template();
 
     untracked(() => {

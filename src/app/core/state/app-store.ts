@@ -1,17 +1,17 @@
-import {patchState, signalStore, withState} from "@ngrx/signals";
-import {withDevtools} from "@angular-architects/ngrx-toolkit";
+import {patchState, signalStore, withHooks, withMethods, withState} from '@ngrx/signals';
+import {withDevtools} from '@angular-architects/ngrx-toolkit';
 
-import {inject, Injectable} from "@angular/core";
-import {AuthConnect, AuthUser, AuthUserSettingsChange} from "../model/auth";
-import {MessagingService, NotificationData, RemoveNotification} from "../services/messaging.service";
-import {AuthService} from "../services/auth.service";
+import {inject, Injectable} from '@angular/core';
+import {AuthConnect, AuthUser, AuthUserSettingsChange} from '../model/auth';
+import {MessagingService, NotificationData, RemoveNotification} from '../services/messaging.service';
+import {AuthService} from '../services/auth.service';
 
 export interface AppState {
   online: boolean;
   user: AuthUser | null;
-  messages: { id: string, message: string}[];
+  messages: { id: string, message: string }[];
   notifications: NotificationData[];
-  notificationAccess:  boolean | null;
+  notificationAccess: boolean | null;
   isMobile: boolean;
   auth: boolean,
   messaging: boolean,
@@ -30,84 +30,82 @@ export const initialState: AppState = {
   ready: false,
 };
 
-@Injectable({providedIn: "root"})
-export class AppStore extends signalStore(  { providedIn: 'root' },
+export const AppStore = signalStore({providedIn: 'root'},
   withDevtools('app'),
-  withState<AppState>(initialState)){
+  withState<AppState>(initialState),
+  withMethods(((state, messagingService = inject(MessagingService), authService = inject(AuthService)) => ({
+      async init() {
+        const notificationAccess = await messagingService.init();
+        patchState(state, {notificationAccess: notificationAccess});
+        await authService.init();
+        patchState(state, {ready: true});
+      },
+      setNetState(online: boolean) {
+        patchState(state, {online: online});
+      },
 
-  messagingService = inject(MessagingService)
-  authService = inject(AuthService)
+      setUiState(isMobile: boolean) {
+        patchState(state, {isMobile: isMobile});
+      },
 
-  constructor() {
-    super();
+      addNotification(data: NotificationData) {
+        patchState(state, {notifications: [...state.notifications(), data]});
+      },
 
-    this.messagingService.onMessage.subscribe(this.addNotification.bind(this));
-    this.authService.onChange.subscribe(this.#authChanged.bind(this))
-  }
+      removeNotification(data: RemoveNotification) {
+        patchState(state, {notifications: state.notifications().filter(n => n.data.containerId !== data.containerId && n.data.targetId !== data.targetId)});
+      },
 
-  async init(){
-    patchState(this, { notificationAccess: await this.messagingService.init()});
-    await this.authService.init()
-    patchState(this, { ready: true});
-  }
+      addMessage(message: string) {
+        patchState(state, {messages: [...state.messages(), {id: crypto.randomUUID(), message: message}]});
+      },
 
-  setNetState(online: boolean){
-    patchState(this, {online: online});
-  }
+      removeMessage(id: string) {
+        patchState(state, {messages: state.messages().filter(x => x.id !== id)});
+      },
 
-  setUiState(isMobile: boolean){
-    patchState(this, {isMobile:isMobile});
-  }
+      async connect(data: AuthConnect) {
+        this._authChanged(await authService.connectUser(data));
+      },
 
-  addNotification(data: NotificationData){
-    patchState(this, {notifications: [...this.notifications(), data]});
-  }
+      login(data: AuthConnect) {
+        authService.login(data);
+      },
 
-  removeNotification(data: RemoveNotification) {
-    patchState(this, {notifications: this.notifications().filter(n => n.data.containerId !== data.containerId && n.data.targetId !== data.targetId)});
-  }
+      async resetPwdMail(mail: string) {
+        await authService.resetPwdMail(mail);
+        this.addMessage('E-Mail wurde versendet');
+      },
 
-  addMessage(message: string){
-    patchState(this, {messages: [...this.messages(), {id : crypto.randomUUID(), message: message}]});
-  }
+      async authUserSettingsChange(data: AuthUserSettingsChange) {
+        this._authChanged(await authService.changeUser(data));
+        this.addMessage('Änderung übernommen');
+      },
+      _authChanged(user: AuthUser) {
+        patchState(state, {user: user});
+      },
 
-  removeMessage(id: string) {
-    patchState(this, {messages: this.messages().filter(x => x.id !== id)});
-  }
+      async requestPermission() {
+        const result = await messagingService.requestPermission();
+        patchState(state, {notificationAccess: result.permission});
+        if (result.message) {
+          this.addMessage(result.message);
+        }
+      },
 
-  async connect(data: AuthConnect){
-    this.#authChanged(await this.authService.connectUser(data))
-  }
+      async removePermission() {
+        await messagingService.removePermission();
+        patchState(state, {notificationAccess: false});
+        this.addMessage('Erfolgreich abgemeldet.\'');
+      },
 
-  login(data: AuthConnect){
-    this.authService.login(data)
-  }
-
-  async resetPwdMail(mail: string){
-    await this.authService.resetPwdMail(mail);
-    this.addMessage('E-Mail wurde versendet')
-  }
-
-  async authUserSettingsChange(data: AuthUserSettingsChange){
-    this.#authChanged(await this.authService.changeUser(data))
-    this.addMessage('Änderung übernommen')
-  }
-
-  #authChanged(user: AuthUser){
-    patchState(this, {user: user});
-  }
-
-  async requestPermission(){
-    const result = await this.messagingService.requestPermission();
-    patchState(this, {notificationAccess: result.permission});
-    if(result.message) {
-      this.addMessage(result.message)
+    })
+  )),
+  withHooks({
+    onInit(store, messagingService = inject(MessagingService), authService = inject(AuthService)) {
+      messagingService.onMessage.subscribe(store.addNotification.bind(this));
+      authService.onChange.subscribe(store._authChanged.bind(this));
     }
-  }
-
-  async removePermission() {
-    await this.messagingService.removePermission();
-    patchState(this, {notificationAccess: false});
-    this.addMessage("Erfolgreich abgemeldet.'")
-  }
-}
+  }),
+);
+export type AppStore = InstanceType<typeof AppStore>;

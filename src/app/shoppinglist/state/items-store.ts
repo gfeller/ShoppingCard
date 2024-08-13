@@ -1,64 +1,62 @@
-import {patchState, signalStore} from "@ngrx/signals";
+import {patchState, signalStore, withComputed, withHooks, withMethods, withState} from '@ngrx/signals';
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
-import {addEntities, removeEntities, withEntities} from "@ngrx/signals/entities";
+import {addEntities, removeEntities, setAllEntities, withEntities} from '@ngrx/signals/entities';
 import {Item, ItemAddViewModel} from "../model/item";
 import {computed, effect, inject, Injectable} from "@angular/core";
 
 import {ListStore} from "./list-store";
 import {ItemService} from "../services/item.service";
+import {List} from '../model/list';
+import {ListService} from '../services/list.service';
 
-
-@Injectable({providedIn: "root"})
-export class ItemsStore extends signalStore(  { providedIn: 'root' },
-  withDevtools('items'),
-  withEntities<Item>()) {
-
-  listStore = inject(ListStore)
-  itemService = inject(ItemService)
-
-
-  constructor() {
-    super();
-
-    this.itemService.onRemove.subscribe((args) => this.#remove(args))
-    this.itemService.onAdd.subscribe((args) => this.#loadList(args))
-
-    effect(() => {
-      if(this.listStore.selectedListId()){
-        this.get(this.listStore.selectedListId()!);
+export const ItemsStore = signalStore({providedIn: 'root'},
+  withDevtools('list'),
+  withEntities<Item>(),
+  withComputed((state, listStore = inject(ListStore)) => ({
+    selectedItems : computed(() => {
+      const selectedListId = listStore.selectedListId();
+      if (selectedListId != undefined) {
+        return state.entities().filter(x => x.listId === selectedListId) as Item[];
       }
+      return [];
     })
-  }
+  })),
+  withMethods(((state,  itemService = inject(ItemService)) => ({
+      _loadList(items: Item[]){
+        patchState(state, addEntities(items))
+      },
 
-  selectedItems = computed(() => {
-    const selectedListId = this.listStore.selectedListId();
-    if (selectedListId != undefined) {
-      return this.entities().filter(x => x.listId === selectedListId) as Item[];
+      _remove(ids: string[]){
+        patchState(state, removeEntities(ids))
+      },
+
+      get(id:string){
+        itemService.getFromList(id);
+      },
+
+      add(item: ItemAddViewModel){
+        itemService.add(item);
+      },
+
+      remove(id: string){
+        itemService.remove(id);
+      },
+
+      update(item: Item){
+        itemService.update(item);
+      },
+    })
+  )),
+  withHooks({
+    onInit(store, itemService = inject(ItemService), listStore = inject(ListStore)) {
+      itemService.onRemove.subscribe((args) => store._remove(args))
+      itemService.onAdd.subscribe((args) => store._loadList(args))
+
+      effect(() => {
+        if(listStore.selectedListId()){
+          store.get(listStore.selectedListId()!);
+        }
+      })
     }
-    return [];
-  });
-
-  #loadList(items: Item[]){
-    patchState(this, addEntities(items))
-  }
-
-  #remove(ids: string[]){
-    patchState(this, removeEntities(ids))
-  }
-
-  get(id:string){
-    this.itemService.getFromList(id);
-  }
-
-  add(item: ItemAddViewModel){
-    this.itemService.add(item);
-  }
-
-  remove(id: string){
-    this.itemService.remove(id);
-  }
-
-  update(item: Item){
-    this.itemService.update(item);
-  }
-}
+  }),
+);

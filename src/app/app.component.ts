@@ -1,4 +1,4 @@
-import {Component, effect} from '@angular/core';
+import {Component, effect, inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UiService} from './core/services/ui.service';
 import {AppStore} from './core/state/app-store';
@@ -50,9 +50,14 @@ import {Router} from '@angular/router';
 export class AppComponent {
   private openSnackbar = false;
 
-  constructor(public appStore: AppStore, public listStore: ListStore, public snackBar: MatSnackBar, public uiService: UiService, public router: Router) {
+  appStore = inject(AppStore)
+  snackBar = inject(MatSnackBar)
+  uiService = inject(UiService)
+  router = inject(Router)
+
+  constructor() {
     effect(() => {
-      const messages = appStore.messages();
+      const messages = this.appStore.messages();
       if (messages.length > 0 && !this.openSnackbar) {
         this.openSnackBar(messages[0], messages[0].message);
       }

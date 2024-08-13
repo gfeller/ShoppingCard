@@ -1,4 +1,4 @@
-import {Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TemplatePortal} from '@angular/cdk/portal';
@@ -12,8 +12,11 @@ export class UiService {
   public subMenu =  signal<TemplatePortal | null>(null)
   public headerMenu =  signal<TemplatePortal | null>(null)
 
-  constructor(coreStore: AppStore, private deviceService: DeviceDetectorService) {
-    coreStore.setUiState(deviceService.isMobile())
+  appstore = inject(AppStore)
+
+
+  constructor( deviceService: DeviceDetectorService) {
+    this.appstore.setUiState(deviceService.isMobile())
   }
 
   public setSubMenu(portal: TemplatePortal | null) {
