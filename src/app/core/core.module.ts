@@ -23,11 +23,8 @@ import {getMessaging, provideMessaging} from '@angular/fire/messaging';
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 import {preLoadApp} from "./services/bootstrapper";
 import {UserComponent} from "./components/user.component";
-import {MaterialModule} from "../shared/material.module";
-import {ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from './components/header.component';
-import {RouterModule} from '@angular/router';
-import {PortalModule} from '@angular/cdk/portal';
+import {SharedModule} from '../shared/shared.module';
 
 console.log(environment.useEmulators);
 
@@ -35,11 +32,7 @@ console.log(environment.useEmulators);
   declarations: [ UserComponent, HeaderComponent],
   exports: [UserComponent, HeaderComponent],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MaterialModule,
-    RouterModule,
-    PortalModule
+    SharedModule
   ],
   providers: [
     preLoadApp,

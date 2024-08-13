@@ -78,7 +78,6 @@ import {AppStore} from "../state/app-store";
             <mat-card-actions>
               <button form="formRegister" mat-flat-button (click)="onSubmit(connectUserData.value, false)">Anmelden</button>
             </mat-card-actions>
-
           </mat-card>
 
           <mat-card>

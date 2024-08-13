@@ -8,10 +8,12 @@ abstract class OnlyBaseDirective {
   private state = false;
 
   constructor(private appStore: AppStore, private _viewContainer: ViewContainerRef, private _template: TemplateRef<object>, private ref: ChangeDetectorRef) {
+    debugger;
     effect(() => {
       const user = this.appStore.user()
       const newState = user ? this.show(user) : false;
 
+      debugger;
       if (newState !== this.state) {
         this.state = newState;
 
