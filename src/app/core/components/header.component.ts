@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
+  standalone: false,
   template: `
     <mat-toolbar class="toolbar">
       <div>

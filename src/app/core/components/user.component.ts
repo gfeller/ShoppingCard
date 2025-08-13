@@ -7,6 +7,7 @@ import {AppStore} from "../state/app-store";
 
 @Component({
   selector: 'app-user',
+  standalone: false,
   template: `
     <ng-template [ngIf]="user()">
       <div style="display: flex; align-items: center; justify-content: center">

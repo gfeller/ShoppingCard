@@ -5,6 +5,7 @@ import {ListStore} from "../state/list-store";
 
 @Component({
   selector: 'app-share',
+  standalone: false,
   template: `
     <mat-card>
       <mat-card-title>

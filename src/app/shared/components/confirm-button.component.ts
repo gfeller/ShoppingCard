@@ -2,6 +2,7 @@ import {ChangeDetectorRef, Component, input, output, signal} from '@angular/core
 
 @Component({
   selector: 'app-confirm-button',
+  standalone: false,
   template: `
     @if (small()) {
       <button mat-icon-button (click)="onDelete()" type="button" color="warn">

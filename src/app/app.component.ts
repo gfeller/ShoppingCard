@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: false,
   template: `
     @if (appStore.ready()) {
       <div class="layout" [class.mobile]="appStore.isMobile()">

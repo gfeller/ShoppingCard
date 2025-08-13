@@ -10,6 +10,7 @@ import {useMenu} from "../../shared/hooks/use-menu.hook";
 
 @Component({
   selector: 'app-shopping-list-entry',
+  standalone: false,
   template: `
     <a mat-tab-link
        [routerLink]="['/list/'+list().id]"
@@ -35,6 +36,7 @@ export class ShoppingListEntryComponent{
 
 @Component({
   selector: 'app-shopping-list',
+  standalone: false,
   template: `
     <router-outlet #myOutlet="outlet"></router-outlet>
     <div [hidden]="myOutlet.isActivated" style="padding-top: min(50%, 160px); text-align: center">Keine Liste ausgewählt. Erstellen Sie doch eine neue!</div>

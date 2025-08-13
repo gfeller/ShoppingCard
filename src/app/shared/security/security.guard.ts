@@ -30,6 +30,7 @@ abstract class OnlyBaseDirective {
 
 @Directive({
   selector: '[appOnlyAnonymous]',
+  standalone: false,
 })
 export class OnlyAnonymousDirective extends OnlyBaseDirective {
   protected show(user: AuthUser): boolean {
@@ -39,6 +40,7 @@ export class OnlyAnonymousDirective extends OnlyBaseDirective {
 
 @Directive({
   selector: '[appOnlyUser]',
+  standalone: false,
 })
 export class OnlyUserDirective extends OnlyBaseDirective {
   protected show(user: AuthUser): boolean {

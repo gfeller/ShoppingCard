@@ -8,6 +8,7 @@ interface AddItemDialogComponentData {
 
 @Component({
   selector: 'app-add-item-dialog',
+  standalone: false,
   template: `
     <h1 mat-dialog-title>{{data.isNew ? 'Neue Liste erfassen' : 'Liste anpassen'}}</h1>
     <form (submit)="onYesClick()">

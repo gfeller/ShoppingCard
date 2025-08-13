@@ -13,6 +13,7 @@ import {useMenu} from "../../shared/hooks/use-menu.hook";
 
 @Component({
   selector: 'app-list',
+  standalone: false,
   template: `
     <div class="layout">
       <mat-list class="content">
